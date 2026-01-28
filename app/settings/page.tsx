@@ -16,8 +16,8 @@ export default function SettingsPage() {
             title: 'Legal & Support',
             items: [
                 { icon: <Shield className="w-5 h-5 text-gray-500" />, label: 'Privacy Policy', href: '/privacy' },
-                { icon: <FileText className="w-5 h-5 text-gray-500" />, label: 'Terms & Conditions', href: '#' },
-                { icon: <HelpCircle className="w-5 h-5 text-gray-500" />, label: 'Help & Feedback', href: '#' },
+                { icon: <FileText className="w-5 h-5 text-gray-500" />, label: 'Terms & Conditions', href: '/terms' },
+                { icon: <HelpCircle className="w-5 h-5 text-gray-500" />, label: 'Help & Feedback', href: '/help' },
             ]
         }
     ];

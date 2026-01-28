@@ -16,18 +16,16 @@ export default function SignupPage() {
 
             <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden my-4">
                 {/* Landscape Illustration Area */}
-                <div className="h-32 bg-gradient-to-b from-sky-300 to-sky-100 relative overflow-hidden">
-                    {/* Clouds */}
-                    <div className="absolute top-4 left-10 w-16 h-4 bg-white/60 rounded-full blur-[2px]" />
-                    <div className="absolute top-8 right-20 w-20 h-5 bg-white/50 rounded-full blur-[2px]" />
-
-                    {/* Farm Elements Svg */}
-                    <svg className="absolute bottom-0 left-0 w-full h-16 text-green-500" viewBox="0 0 1440 320" preserveAspectRatio="none">
-                        <path fill="#22C55E" fillOpacity="1" d="M0,256L48,245.3C96,235,192,213,288,192C384,171,480,149,576,160C672,171,768,213,864,229.3C960,245,1056,235,1152,213.3C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                    </svg>
-                    <div className="absolute -bottom-2 left-6">
-                        <Sprout className="w-10 h-10 text-green-700" />
-                    </div>
+                <div className="h-40 relative overflow-hidden">
+                    {/* Background Image */}
+                    <div
+                        className="absolute inset-0 z-0"
+                        style={{
+                            backgroundImage: "url('/assets/signup-bg.png')",
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                        }}
+                    ></div>
                 </div>
 
                 <div className="p-8 pt-6">

@@ -16,25 +16,28 @@ export default function OnboardingPage() {
 
             <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl overflow-hidden my-4">
                 {/* Header Illustration */}
-                <div className="h-40 bg-green-600 relative overflow-hidden flex items-center justify-center">
-                    {/* Abstract Farm Pattern */}
-                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div className="h-60 relative overflow-hidden flex items-center justify-center">
+                    {/* Background Image */}
+                    <div
+                        className="absolute inset-0 z-0"
+                        style={{
+                            backgroundImage: "url('/assets/header-bg.png')",
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                        }}
+                    ></div>
 
-                    <div className="relative z-10 text-center text-white p-6">
+                    {/* Gradient overlay for text readability if needed, or just the content */}
+                    <div className="relative z-10 text-center text-white p-6 pb-16">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30">
                             <Sprout className="w-8 h-8 text-white" />
                         </div>
                         <h1 className="text-2xl font-bold">Let's Set Up Your Farm</h1>
                         <p className="text-green-100 text-sm mt-1">We just need a few details to get started.</p>
                     </div>
-
-                    {/* Decorative curves */}
-                    <svg className="absolute bottom-0 left-0 w-full h-12 text-white" viewBox="0 0 1440 320" preserveAspectRatio="none">
-                        <path fill="#ffffff" fillOpacity="1" d="M0,224L48,213.3C96,203,192,181,288,197.3C384,213,480,267,576,266.7C672,267,768,213,864,186.7C960,160,1056,160,1152,181.3C1248,203,1344,245,1392,266.7L1440,288L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                    </svg>
                 </div>
 
-                <div className="p-8 pt-2">
+                <div className="p-8">
                     <form className="space-y-6">
 
                         {/* Crop Type Selector */}
