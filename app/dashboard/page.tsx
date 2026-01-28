@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { CloudRain, Droplets, Thermometer, Wind, User, Sprout, Calendar, ArrowRight } from 'lucide-react';
+import { CloudRain, Droplets, Thermometer, Wind, User, Sprout, Calendar, ArrowRight, Settings } from 'lucide-react';
 
 export default function DashboardPage() {
     // Mock data
@@ -36,15 +36,20 @@ export default function DashboardPage() {
                     </div>
                     <div>
                         <h1 className="text-lg font-bold text-gray-800">My Farm</h1>
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Link href="/history" className="flex items-center gap-1 text-xs text-gray-500 hover:text-green-600 transition-colors">
                             <Calendar className="w-3 h-3" />
                             <span>Today, 28 Jan</span>
-                        </div>
+                        </Link>
                     </div>
                 </div>
-                <Link href="/profile" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <User className="w-5 h-5 text-gray-600" />
-                </Link>
+                <div className="flex gap-2">
+                    <Link href="/settings" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                        <Settings className="w-5 h-5 text-gray-600" />
+                    </Link>
+                    <Link href="/profile" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                        <User className="w-5 h-5 text-gray-600" />
+                    </Link>
+                </div>
             </div>
 
             <div className="p-6 space-y-6">
@@ -79,29 +84,34 @@ export default function DashboardPage() {
                 </Link>
 
                 {/* Weather Summary Section */}
-                <div>
-                    <h3 className="text-gray-800 font-bold text-lg mb-3">Weather Summary</h3>
-                    <div className="grid grid-cols-3 gap-3">
-                        {/* Temp */}
-                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
-                            <Thermometer className="w-6 h-6 text-orange-500 mb-2" />
-                            <span className="text-gray-800 font-bold text-lg">{weather.temp}</span>
-                            <span className="text-xs text-gray-500">Temp</span>
-                        </div>
-                        {/* Humidity */}
-                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
-                            <Wind className="w-6 h-6 text-blue-500 mb-2" />
-                            <span className="text-gray-800 font-bold text-lg">{weather.humidity}</span>
-                            <span className="text-xs text-gray-500">Humidity</span>
-                        </div>
-                        {/* Rain */}
-                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
-                            <CloudRain className="w-6 h-6 text-gray-500 mb-2" />
-                            <span className="text-gray-800 font-bold text-lg">{weather.rainChance}</span>
-                            <span className="text-xs text-gray-500">Rain Prob.</span>
+                <Link href="/weather">
+                    <div className="group cursor-pointer">
+                        <h3 className="text-gray-800 font-bold text-lg mb-3 flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                            Weather Summary
+                            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </h3>
+                        <div className="grid grid-cols-3 gap-3">
+                            {/* Temp */}
+                            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center group-hover:border-blue-200 transition-colors">
+                                <Thermometer className="w-6 h-6 text-orange-500 mb-2" />
+                                <span className="text-gray-800 font-bold text-lg">{weather.temp}</span>
+                                <span className="text-xs text-gray-500">Temp</span>
+                            </div>
+                            {/* Humidity */}
+                            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center group-hover:border-blue-200 transition-colors">
+                                <Wind className="w-6 h-6 text-blue-500 mb-2" />
+                                <span className="text-gray-800 font-bold text-lg">{weather.humidity}</span>
+                                <span className="text-xs text-gray-500">Humidity</span>
+                            </div>
+                            {/* Rain */}
+                            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center group-hover:border-blue-200 transition-colors">
+                                <CloudRain className="w-6 h-6 text-gray-500 mb-2" />
+                                <span className="text-gray-800 font-bold text-lg">{weather.rainChance}</span>
+                                <span className="text-xs text-gray-500">Rain Prob.</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Link>
 
                 {/* Soil Moisture Section */}
                 <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
