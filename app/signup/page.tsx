@@ -2,11 +2,53 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock, User, Eye, EyeOff, Sprout } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    // Form State
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    const handleSignUp = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await authClient.signUp.email({
+                email,
+                password,
+                name,
+                callbackURL: "/onboarding",
+            }, {
+                onSuccess: () => {
+                    router.push('/onboarding');
+                },
+                onError: (ctx) => {
+                    alert(ctx.error.message);
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            alert("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center p-4">
@@ -21,7 +63,7 @@ export default function SignupPage() {
                     <div
                         className="absolute inset-0 z-0"
                         style={{
-                            backgroundImage: "url('/assets/signup-bg.png')",
+                            backgroundImage: "url('/images/farmer-header-v2.png')",
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
@@ -36,15 +78,18 @@ export default function SignupPage() {
                         <p className="text-gray-500 mt-1 text-sm">Start your data-driven farming journey</p>
                     </div>
 
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSignUp}>
                         <div className="space-y-1">
                             <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="fullname">Full Name</label>
                             <div className="relative">
                                 <input
                                     id="fullname"
                                     type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
                                     placeholder="John Farmer"
+                                    required
                                 />
                                 <User className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                             </div>
@@ -56,8 +101,11 @@ export default function SignupPage() {
                                 <input
                                     id="email"
                                     type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
                                     placeholder="name@example.com"
+                                    required
                                 />
                                 <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                             </div>
@@ -69,8 +117,12 @@ export default function SignupPage() {
                                 <input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
                                     placeholder="Create a password"
+                                    required
+                                    minLength={8}
                                 />
                                 <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                                 <button
@@ -89,8 +141,11 @@ export default function SignupPage() {
                                 <input
                                     id="confirm-password"
                                     type={showConfirmPassword ? "text" : "password"}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                     className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
                                     placeholder="Confirm your password"
+                                    required
                                 />
                                 <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                                 <button
@@ -103,8 +158,17 @@ export default function SignupPage() {
                             </div>
                         </div>
 
-                        <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] mt-2">
-                            Create Account
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] mt-2 flex justify-center items-center gap-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    Creating Account...
+                                </>
+                            ) : "Create Account"}
                         </button>
                     </form>
 
@@ -119,7 +183,15 @@ export default function SignupPage() {
                         </div>
 
                         <div className="mt-6 flex flex-col gap-3">
-                            <button className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50 transition-all">
+                            <button
+                                onClick={async () => {
+                                    await authClient.signIn.social({
+                                        provider: "google",
+                                        callbackURL: "/onboarding"
+                                    });
+                                }}
+                                className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50 transition-all"
+                            >
                                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                                     <path
                                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -140,16 +212,6 @@ export default function SignupPage() {
                                 </svg>
                                 Continue with Google
                             </button>
-
-                            <button className="w-full flex items-center justify-center gap-3 bg-[#1877F2] text-white font-medium py-3 rounded-xl hover:bg-[#1864D9] transition-all">
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                                    />
-                                </svg>
-                                Continue with Facebook
-                            </button>
-
                         </div>
 
                         <p className="mt-6 text-center text-sm text-gray-500">

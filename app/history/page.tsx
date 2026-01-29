@@ -2,53 +2,33 @@
 
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Droplets, CloudSun, CloudRain, Sun, XCircle, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function HistoryPage() {
-    // Mock history data
-    const historyItems = [
-        {
-            id: 1,
-            date: 'Today, 28 Jan',
-            status: 'Irrigated', // Irrigated | Skipped
-            duration: '45 Mins',
-            weatherIcon: <Sun className="w-5 h-5 text-orange-500" />,
-            weatherText: 'Sunny, 32°C'
-        },
-        {
-            id: 2,
-            date: 'Tue, 27 Jan',
-            status: 'Skipped',
-            duration: '-',
-            reason: 'Sufficient Moisture',
-            weatherIcon: <CloudSun className="w-5 h-5 text-gray-500" />,
-            weatherText: 'Partly Cloudy'
-        },
-        {
-            id: 3,
-            date: 'Mon, 26 Jan',
-            status: 'Irrigated',
-            duration: '60 Mins',
-            weatherIcon: <Sun className="w-5 h-5 text-orange-500" />,
-            weatherText: 'High Heat'
-        },
-        {
-            id: 4,
-            date: 'Sun, 25 Jan',
-            status: 'Skipped',
-            duration: '-',
-            reason: 'Rainfall',
-            weatherIcon: <CloudRain className="w-5 h-5 text-blue-500" />,
-            weatherText: 'Heavy Rain'
-        },
-        {
-            id: 5,
-            date: 'Sat, 24 Jan',
-            status: 'Irrigated',
-            duration: '40 Mins',
-            weatherIcon: <Sun className="w-5 h-5 text-orange-500" />,
-            weatherText: 'Clear Sky'
+    const [historyItems, setHistoryItems] = useState<any[]>([]);
+
+    useEffect(() => {
+        async function fetchHistory() {
+            try {
+                const res = await fetch('/api/irrigation/history');
+                const data = await res.json();
+                if (data.history) {
+                    const formatted = data.history.map((row: any) => ({
+                        id: row.id,
+                        date: new Date(row.display_time).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+                        status: row.status === 'In Progress' ? 'Running' : (row.status || (row.action === 'Skip' ? 'Skipped' : 'Irrigated')),
+                        duration: row.durationMinutes ? `${Math.round(row.durationMinutes)} Mins` : '-',
+                        weatherText: row.reason || `${row.waterConsumed ? Math.round(row.waterConsumed) + 'L' : ''}`,
+                        weatherIcon: row.status === 'Completed' ? <Sun className="w-5 h-5 text-orange-500" /> : <CloudSun className="w-5 h-5 text-gray-400" />
+                    }));
+                    setHistoryItems(formatted);
+                }
+            } catch (e) {
+                console.error("History fetch failed", e);
+            }
         }
-    ];
+        fetchHistory();
+    }, []);
 
     return (
         <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center p-4">

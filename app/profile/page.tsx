@@ -1,15 +1,54 @@
 'use client';
 
-import { User, Mail, MapPin, Sprout, Edit2, ArrowLeft } from 'lucide-react';
+import { User, Mail, MapPin, Sprout, Edit2, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { authClient } from '@/lib/auth-client';
+import { getFarmDetails } from '@/app/actions/getFarmDetails';
 
 export default function ProfilePage() {
-    // Mock user data - in a real app, this would come from a database or context
-    const user = {
-        name: "John Farmer",
-        email: "john.farmer@example.com",
-        location: "Punjab, India",
-        crop: "Wheat"
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<any>(null);
+    const [farm, setFarm] = useState<any>(null);
+
+    useEffect(() => {
+        async function loadProfile() {
+            try {
+                const session = await authClient.getSession();
+                if (session.data?.user) {
+                    setUser(session.data.user);
+
+                    // Fetch farm details
+                    const details = await getFarmDetails(session.data.user.id);
+                    setFarm(details);
+                }
+            } catch (e) {
+                console.error("Failed to load profile", e);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadProfile();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
+            </div>
+        );
+    }
+
+    // Default fallbacks if no data found
+    const displayUser = {
+        name: user?.name || "Guest Farmer",
+        email: user?.email || "No email",
+        image: user?.image
+    };
+
+    const displayFarm = {
+        location: farm?.farmLocation || "Not set",
+        crop: farm?.cropType || "Not selected"
     };
 
     return (
@@ -37,8 +76,12 @@ export default function ProfilePage() {
                     <div className="px-8 relative">
                         <div className="absolute -top-16 left-1/2 -translate-x-1/2">
                             <div className="w-32 h-32 bg-white rounded-full p-2 shadow-lg">
-                                <div className="w-full h-full bg-green-50 rounded-full flex items-center justify-center border border-green-100">
-                                    <User className="w-14 h-14 text-green-600" />
+                                <div className="w-full h-full bg-green-50 rounded-full flex items-center justify-center border border-green-100 overflow-hidden">
+                                    {displayUser.image ? (
+                                        <img src={displayUser.image} alt={displayUser.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <User className="w-14 h-14 text-green-600" />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -46,7 +89,7 @@ export default function ProfilePage() {
 
                     {/* Content */}
                     <div className="pt-20 pb-8 px-8 text-center">
-                        <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
+                        <h1 className="text-2xl font-bold text-gray-800">{displayUser.name}</h1>
                         <p className="text-gray-500 text-sm mt-1">SmartIrrigate Member</p>
 
                         <div className="mt-8 space-y-4 text-left">
@@ -57,7 +100,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div className="flex-1 overflow-hidden">
                                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</p>
-                                    <p className="text-gray-800 font-medium truncate">{user.email}</p>
+                                    <p className="text-gray-800 font-medium truncate">{displayUser.email}</p>
                                 </div>
                             </div>
 
@@ -68,7 +111,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Farm Location</p>
-                                    <p className="text-gray-800 font-medium">{user.location}</p>
+                                    <p className="text-gray-800 font-medium capitalize">{displayFarm.location}</p>
                                 </div>
                             </div>
 
@@ -79,15 +122,15 @@ export default function ProfilePage() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Primary Crop</p>
-                                    <p className="text-gray-800 font-medium">{user.crop}</p>
+                                    <p className="text-gray-800 font-medium capitalize">{displayFarm.crop}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="mt-8">
-                            <Link href="/profile/edit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                            <Link href="/onboarding" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                                 <Edit2 className="w-4 h-4" />
-                                Edit Profile
+                                Edit Farm Details
                             </Link>
                         </div>
                     </div>

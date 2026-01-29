@@ -1,7 +1,12 @@
+'use client';
+
 import Link from "next/link";
-import { Droplets, Sprout, CloudSun, BarChart3, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Droplets, Sprout, CloudSun, BarChart3, ArrowRight, Globe } from "lucide-react";
+import { useLanguage } from "./context/LanguageContext";
 
 export default function Home() {
+  const { t, language, setLanguage } = useLanguage();
+
   return (
     <div className="flex min-h-screen flex-col bg-white text-gray-900">
       {/* Navigation */}
@@ -10,20 +15,34 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl text-green-700 hover:text-green-800 transition-colors">
               <Sprout className="h-6 w-6" />
-              <span>SmartIrrigate</span>
+              <span>{t('brand')}</span>
             </Link>
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4">
+              {/* Language Selector */}
+              <div className="hidden sm:flex items-center gap-1 bg-gray-100/50 px-2 py-1 rounded-lg border border-gray-200">
+                <Globe className="h-4 w-4 text-gray-500" />
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as any)}
+                  className="bg-transparent text-sm font-semibold text-gray-700 outline-none cursor-pointer border-none focus:ring-0 py-0 pl-1 pr-8"
+                >
+                  <option value="en">English</option>
+                  <option value="ta">தமிழ்</option>
+                  <option value="hi">हिंदी</option>
+                </select>
+              </div>
+
               <Link
                 href="/login"
                 className="text-sm font-semibold leading-6 text-gray-700 hover:text-green-600 transition-colors px-3 py-2"
               >
-                Log in
+                {t('login')}
               </Link>
               <Link
                 href="/signup"
                 className="rounded-full bg-green-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 hover:shadow-green-200 transition-all flex items-center gap-2"
               >
-                Get Started
+                {t('get_started')}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -45,29 +64,29 @@ export default function Home() {
             <div className="mx-auto max-w-3xl">
               <div className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20 mb-6">
                 <span className="flex h-2 w-2 rounded-full bg-green-600 mr-2"></span>
-                The Future of Farming is Here
+                {t('hero_badge')}
               </div>
               <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl mb-6">
-                Grow More with <br />
+                {t('hero_title_1')} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-sky-600">
-                  Intelligent Irrigation
+                  {t('hero_title_2')}
                 </span>
               </h1>
               <p className="text-lg leading-8 text-gray-600 mb-10 mx-auto max-w-2xl">
-                Eliminate the guesswork. SmartIrrigate helps small farmers conserve water and increase crop yields by providing data-driven schedules based on real-time weather and soil conditions.
+                {t('hero_desc')}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   href="/signup"
                   className="w-full sm:w-auto rounded-xl bg-green-600 px-8 py-4 text-base font-bold text-white shadow-lg hover:bg-green-500 hover:scale-105 transition-all duration-200"
                 >
-                  Start Saving Water
+                  {t('cta_primary')}
                 </Link>
                 <Link
                   href="/how-it-works"
                   className="w-full sm:w-auto rounded-xl bg-white border border-gray-200 px-8 py-4 text-base font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
                 >
-                  See How It Works
+                  {t('cta_secondary')}
                 </Link>
               </div>
             </div>
@@ -80,23 +99,23 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="relative rounded-3xl bg-gray-50 p-8 sm:p-12 overflow-hidden border border-gray-100">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-red-100/50 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 relative z-10">The Challenge</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 relative z-10">{t('challenge_title')}</h3>
                 <ul className="space-y-4 relative z-10">
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 flex items-center justify-center text-red-600 mt-0.5">✕</div>
-                    <p className="text-gray-600">Reliance on strict schedules or manual judgment.</p>
+                    <p className="text-gray-600">{t('challenge_1')}</p>
                   </li>
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 flex items-center justify-center text-red-600 mt-0.5">✕</div>
-                    <p className="text-gray-600">Over-irrigation leads to water wastage and increased costs.</p>
+                    <p className="text-gray-600">{t('challenge_2')}</p>
                   </li>
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 flex items-center justify-center text-red-600 mt-0.5">✕</div>
-                    <p className="text-gray-600">Unexpected weather causes crop damage and yield loss.</p>
+                    <p className="text-gray-600">{t('challenge_3')}</p>
                   </li>
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 flex items-center justify-center text-red-600 mt-0.5">✕</div>
-                    <p className="text-gray-600">Lack of accessible, easy-to-use digital tools for small farmers.</p>
+                    <p className="text-gray-600">{t('challenge_4')}</p>
                   </li>
                 </ul>
               </div>
@@ -173,7 +192,7 @@ export default function Home() {
                 Ready to optimize your farm?
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of small farmers who are saving water and growing better crops with SmartIrrigate tommorow.
+                Join thousands of small farmers who are saving water and growing better crops with {t('brand')} tommorow.
               </p>
               <Link
                 href="/signup"
@@ -191,10 +210,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg text-gray-900">
             <Sprout className="h-5 w-5 text-green-600" />
-            <span>SmartIrrigate</span>
+            <span>{t('brand')}</span>
           </Link>
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} SmartIrrigate. Empowering farmers everyday.
+            © {new Date().getFullYear()} {t('brand')}. Empowering farmers everyday.
           </p>
         </div>
       </footer>

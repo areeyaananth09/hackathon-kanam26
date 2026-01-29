@@ -2,10 +2,75 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, KeyRound } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
+    const [useOTP, setUseOTP] = useState(true); // Default to OTP as requested
+    const [otpSent, setOtpSent] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [otp, setOtp] = useState('');
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const handleGoogleSignIn = async () => {
+        await authClient.signIn.social({
+            provider: "google",
+            callbackURL: "/onboarding" // Redirect to onboarding after login
+        });
+    };
+
+    const handleSendOTP = async () => {
+        setLoading(true);
+        try {
+            await authClient.emailOtp.sendVerificationOtp({
+                email,
+                type: "sign-in"
+            });
+            setOtpSent(true);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to send OTP");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSignInWithOTP = async () => {
+        setLoading(true);
+        try {
+            await authClient.signIn.emailOtp({
+                email,
+                otp
+            });
+            router.push('/onboarding');
+        } catch (error) {
+            console.error(error);
+            alert("Invalid OTP");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSignInWithPassword = async () => {
+        setLoading(true);
+        try {
+            await authClient.signIn.email({
+                email,
+                password,
+                callbackURL: "/onboarding"
+            });
+            router.push('/onboarding');
+        } catch (error) {
+            console.error(error);
+            alert("Invalid credentials");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center p-4">
@@ -37,49 +102,104 @@ export default function LoginPage() {
                         <p className="text-gray-500 mt-2 text-sm">Welcome back, farmer!</p>
                     </div>
 
-                    <form className="space-y-5">
+                    <div className="space-y-5">
                         <div className="space-y-1">
                             <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="email">Email Address</label>
                             <div className="relative">
                                 <input
                                     id="email"
                                     type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
                                     placeholder="name@example.com"
+                                    disabled={otpSent && useOTP}
                                 />
                                 <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                             </div>
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="password">Password</label>
-                            <div className="relative">
-                                <input
-                                    id="password"
-                                    type={showPassword ? "text" : "password"}
-                                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                    placeholder="Enter your password"
-                                />
-                                <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
-                                >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
-                            </div>
-                            <div className="flex justify-end pt-1">
-                                <Link href="/forgot-password" className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">
-                                    Forgot Password?
-                                </Link>
-                            </div>
-                        </div>
+                        {useOTP ? (
+                            <>
+                                {otpSent ? (
+                                    <div className="space-y-1 animation-fade-in">
+                                        <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="otp">Enter Verification Code</label>
+                                        <div className="relative">
+                                            <input
+                                                id="otp"
+                                                type="text"
+                                                value={otp}
+                                                onChange={(e) => setOtp(e.target.value)}
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400 tracking-widest font-mono"
+                                                placeholder="123456"
+                                            />
+                                            <KeyRound className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+                                        </div>
+                                    </div>
+                                ) : null}
 
-                        <Link href="/onboarding" className="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                            Sign In
-                        </Link>
-                    </form>
+                                <button
+                                    onClick={otpSent ? handleSignInWithOTP : handleSendOTP}
+                                    disabled={loading}
+                                    className="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {loading ? 'Processing...' : (otpSent ? 'Verify & Sign In' : 'Send Login Code')}
+                                    {!loading && !otpSent && <ArrowRight className="w-4 h-4" />}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="password">Password</label>
+                                    <div className="relative">
+                                        <input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
+                                            placeholder="Enter your password"
+                                        />
+                                        <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+                                        >
+                                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
+                                    <div className="flex justify-end pt-1">
+                                        <Link href="/forgot-password" className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">
+                                            Forgot Password?
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleSignInWithPassword}
+                                    disabled={loading}
+                                    className="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70"
+                                >
+                                    {loading ? 'Signing In...' : 'Sign In'}
+                                </button>
+                            </>
+                        )}
+
+                        <div className="text-center">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setUseOTP(!useOTP);
+                                    setOtpSent(false);
+                                    setOtp('');
+                                }}
+                                className="text-green-600 font-medium hover:underline text-sm"
+                            >
+                                {useOTP ? "Login with Password instead" : "Login with Code instead"}
+                            </button>
+                        </div>
+                    </div>
 
                     <div className="mt-8">
                         <div className="relative">
@@ -92,7 +212,10 @@ export default function LoginPage() {
                         </div>
 
                         <div className="mt-6 flex flex-col gap-3">
-                            <button className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50 transition-all">
+                            <button
+                                onClick={handleGoogleSignIn}
+                                className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50 transition-all"
+                            >
                                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                                     <path
                                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -112,15 +235,6 @@ export default function LoginPage() {
                                     />
                                 </svg>
                                 Continue with Google
-                            </button>
-
-                            <button className="w-full flex items-center justify-center gap-3 bg-[#1877F2] text-white font-medium py-3 rounded-xl hover:bg-[#1864D9] transition-all">
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                                    />
-                                </svg>
-                                Continue with Facebook
                             </button>
                         </div>
 

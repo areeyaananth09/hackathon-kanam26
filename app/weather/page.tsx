@@ -1,17 +1,111 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, CloudRain, Sun, Cloud, CloudSun, Droplets, Wind, MapPin } from 'lucide-react';
+import { ArrowLeft, CloudRain, Sun, Cloud, CloudSun, Droplets, Wind, MapPin, Search } from 'lucide-react';
 
+import { useEffect, useState } from 'react';
+import { getWeather } from '@/app/actions/getWeather';
+
+import { authClient } from '@/lib/auth-client';
+import { getFarmDetails } from '@/app/actions/getFarmDetails';
 export default function WeatherPage() {
-    // Mock forecast data
-    const forecast = [
-        { day: 'Today', date: '28 Jan', tempHigh: 32, tempLow: 24, rain: '10%', icon: <Sun className="w-8 h-8 text-orange-500" />, status: 'Sunny' },
-        { day: 'Tomorrow', date: '29 Jan', tempHigh: 31, tempLow: 23, rain: '30%', icon: <CloudSun className="w-8 h-8 text-yellow-500" />, status: 'Partly Cloudy' },
-        { day: 'Friday', date: '30 Jan', tempHigh: 28, tempLow: 22, rain: '80%', icon: <CloudRain className="w-8 h-8 text-blue-500" />, status: 'Heavy Rain' },
-        { day: 'Saturday', date: '31 Jan', tempHigh: 29, tempLow: 23, rain: '45%', icon: <Cloud className="w-8 h-8 text-gray-400" />, status: 'Cloudy' },
-        { day: 'Sunday', date: '01 Feb', tempHigh: 30, tempLow: 24, rain: '20%', icon: <CloudSun className="w-8 h-8 text-yellow-500" />, status: 'Mostly Sunny' },
-    ];
+    const [weatherData, setWeatherData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [city, setCity] = useState("Punjab, India");
+    const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                // Get user session to find ID
+                const session = await authClient.getSession();
+                let locationQuery = "Punjab,IN"; // Default
+
+                if (session.data?.user?.id) {
+                    const farm = await getFarmDetails(session.data.user.id);
+                    if (farm?.farmLocation) {
+                        locationQuery = farm.farmLocation;
+                        setCity(farm.farmLocation);
+                    }
+                }
+
+                const data = await getWeather(locationQuery);
+
+                if (data && !data.error) {
+                    setWeatherData(data);
+                } else {
+                    setError(data?.error || "Failed to fetch data");
+                    if (data?.error?.includes("401") || !data) {
+                        setError("API Key invalid or not yet active. Please wait 30-60m.");
+                    }
+                }
+            } catch (err) {
+                console.error("Weather page error:", err);
+                setError("Something went wrong loading functionality.");
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
+
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const data = await getWeather(searchQuery);
+            if (data && !data.error) {
+                setWeatherData(data);
+                const locationName = `${data.current.name}, ${data.current.sys.country}`;
+                setCity(locationName);
+                setSearchQuery("");
+            } else {
+                setError(data?.error || "Failed to find location");
+            }
+        } catch (err) {
+            setError("Failed to fetch weather for this location");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center">Loading Weather...</div>;
+    }
+
+    if (error || !weatherData) {
+        return (
+            <div className="min-h-screen bg-[#F0F9FF] flex flex-col items-center justify-center p-4 text-center">
+                <p className="text-red-500 font-bold mb-2">Unable to load Weather</p>
+                <p className="text-gray-600 bg-white p-4 rounded-xl shadow-sm border border-gray-200">{error || "Check API configuration"}</p>
+                <div className="flex gap-4 mt-6">
+                    <Link href="/dashboard" className="text-green-600 hover:underline">Return to Dashboard</Link>
+                    <button onClick={() => { setError(null); setLoading(false); }} className="text-blue-600 hover:underline">Try Again</button>
+                </div>
+            </div>
+        );
+    }
+
+    const current = weatherData.current;
+
+    // Process forecast data to get one entry per day (simple approach)
+    // OpenWeatherMap 5 day forecast is every 3 hours
+    const dailyForecast = weatherData.forecast.list.filter((reading: any) => reading.dt_txt.includes("12:00:00")).slice(0, 5);
+
+    const forecast = dailyForecast.map((day: any) => ({
+        day: new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' }),
+        date: new Date(day.dt * 1000).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
+        tempHigh: Math.round(day.main.temp_max),
+        tempLow: Math.round(day.main.temp_min),
+        rain: `${Math.round(day.pop * 100)}%`,
+        icon: day.weather[0].main === 'Rain' ? <CloudRain className="w-8 h-8 text-blue-500" /> : <Sun className="w-8 h-8 text-orange-500" />, // Simplified
+        status: day.weather[0].main
+    }));
 
     return (
         <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center p-4">
@@ -26,10 +120,19 @@ export default function WeatherPage() {
                         <ArrowLeft className="w-4 h-4" />
                         Back to Dashboard
                     </Link>
-                    <div className="flex items-center gap-1 text-gray-500 text-sm bg-white px-3 py-1 rounded-full shadow-sm">
-                        <MapPin className="w-3 h-3 text-red-500" />
-                        Punjab, India
-                    </div>
+                    <form onSubmit={handleSearch} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border focus-within:ring-2 focus-within:ring-blue-400 transition-all">
+                        <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={city} // Shows current city as placeholder
+                            className="bg-transparent outline-none text-sm text-gray-700 w-28 placeholder:text-gray-500"
+                        />
+                        <button type="submit" className="text-gray-400 hover:text-blue-500 transition-colors">
+                            <Search className="w-3.5 h-3.5" />
+                        </button>
+                    </form>
                 </div>
 
                 <div className="space-y-6">
@@ -40,29 +143,32 @@ export default function WeatherPage() {
                         <div className="relative z-10">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h1 className="text-5xl font-bold mb-1">28°</h1>
-                                    <p className="text-blue-100 text-lg">Sunny</p>
-                                    <p className="text-blue-200 text-sm mt-4">H:32° L:24°</p>
+                                    <h1 className="text-5xl font-bold mb-1">{Math.round(current.main.temp)}°</h1>
+                                    <p className="text-blue-100 text-lg capitalize">{current.weather[0].description}</p>
+                                    <p className="text-blue-200 text-sm mt-4">H:{Math.round(current.main.temp_max)}° L:{Math.round(current.main.temp_min)}°</p>
                                 </div>
                                 <div className="flex flex-col items-center">
-                                    <Sun className="w-20 h-20 text-yellow-300 animate-pulse-slow" />
+                                    {current.weather[0].main === 'Rain' ?
+                                        <CloudRain className="w-20 h-20 text-white animate-bounce-slow" /> :
+                                        <Sun className="w-20 h-20 text-yellow-300 animate-pulse-slow" />
+                                    }
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-white/20">
                                 <div className="flex flex-col items-center">
                                     <Wind className="w-5 h-5 text-blue-200 mb-1" />
-                                    <span className="font-bold">12 km/h</span>
+                                    <span className="font-bold">{Math.round(current.wind.speed * 3.6)} km/h</span>
                                     <span className="text-xs text-blue-200">Wind</span>
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <Droplets className="w-5 h-5 text-blue-200 mb-1" />
-                                    <span className="font-bold">65%</span>
+                                    <span className="font-bold">{current.main.humidity}%</span>
                                     <span className="text-xs text-blue-200">Humidity</span>
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <CloudRain className="w-5 h-5 text-blue-200 mb-1" />
-                                    <span className="font-bold">10%</span>
+                                    <span className="font-bold">--</span>
                                     <span className="text-xs text-blue-200">Precip</span>
                                 </div>
                             </div>
@@ -77,7 +183,7 @@ export default function WeatherPage() {
                         </h2>
 
                         <div className="space-y-6">
-                            {forecast.map((day, index) => (
+                            {forecast.map((day: any, index: number) => (
                                 <div key={index} className="flex items-center justify-between group">
                                     <div className="w-24">
                                         <p className="font-bold text-gray-800">{day.day}</p>
