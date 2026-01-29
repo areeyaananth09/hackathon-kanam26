@@ -8,7 +8,10 @@ import { getWeather } from '@/app/actions/getWeather';
 
 import { authClient } from '@/lib/auth-client';
 import { getFarmDetails } from '@/app/actions/getFarmDetails';
+import { useLanguage } from '../context/LanguageContext';
+
 export default function WeatherPage() {
+    const { t } = useLanguage();
     const [weatherData, setWeatherData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -65,27 +68,27 @@ export default function WeatherPage() {
                 setCity(locationName);
                 setSearchQuery("");
             } else {
-                setError(data?.error || "Failed to find location");
+                setError(data?.error || t('unable_to_load_weather'));
             }
         } catch (err) {
-            setError("Failed to fetch weather for this location");
+            setError(t('unable_to_load_weather'));
         } finally {
             setLoading(false);
         }
     };
 
     if (loading) {
-        return <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center">Loading Weather...</div>;
+        return <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center">{t('loading_weather')}</div>;
     }
 
     if (error || !weatherData) {
         return (
             <div className="min-h-screen bg-[#F0F9FF] flex flex-col items-center justify-center p-4 text-center">
-                <p className="text-red-500 font-bold mb-2">Unable to load Weather</p>
-                <p className="text-gray-600 bg-white p-4 rounded-xl shadow-sm border border-gray-200">{error || "Check API configuration"}</p>
+                <p className="text-red-500 font-bold mb-2">{t('unable_to_load_weather')}</p>
+                <p className="text-gray-600 bg-white p-4 rounded-xl shadow-sm border border-gray-200">{error || t('check_api_config')}</p>
                 <div className="flex gap-4 mt-6">
-                    <Link href="/dashboard" className="text-green-600 hover:underline">Return to Dashboard</Link>
-                    <button onClick={() => { setError(null); setLoading(false); }} className="text-blue-600 hover:underline">Try Again</button>
+                    <Link href="/dashboard" className="text-green-600 hover:underline">{t('return_dashboard')}</Link>
+                    <button onClick={() => { setError(null); setLoading(false); }} className="text-blue-600 hover:underline">{t('try_again')}</button>
                 </div>
             </div>
         );
@@ -118,7 +121,7 @@ export default function WeatherPage() {
                 <div className="mb-6 flex items-center justify-between">
                     <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors font-medium">
                         <ArrowLeft className="w-4 h-4" />
-                        Back to Dashboard
+                        {t('back_dashboard')}
                     </Link>
                     <form onSubmit={handleSearch} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border focus-within:ring-2 focus-within:ring-blue-400 transition-all">
                         <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
@@ -159,17 +162,17 @@ export default function WeatherPage() {
                                 <div className="flex flex-col items-center">
                                     <Wind className="w-5 h-5 text-blue-200 mb-1" />
                                     <span className="font-bold">{Math.round(current.wind.speed * 3.6)} km/h</span>
-                                    <span className="text-xs text-blue-200">Wind</span>
+                                    <span className="text-xs text-blue-200">{t('wind_speed')}</span>
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <Droplets className="w-5 h-5 text-blue-200 mb-1" />
                                     <span className="font-bold">{current.main.humidity}%</span>
-                                    <span className="text-xs text-blue-200">Humidity</span>
+                                    <span className="text-xs text-blue-200">{t('humidity')}</span>
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <CloudRain className="w-5 h-5 text-blue-200 mb-1" />
                                     <span className="font-bold">--</span>
-                                    <span className="text-xs text-blue-200">Precip</span>
+                                    <span className="text-xs text-blue-200">{t('precipitation')}</span>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +182,7 @@ export default function WeatherPage() {
                     <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-6">
                         <h2 className="text-gray-800 font-bold mb-6 flex items-center gap-2">
                             <CloudSun className="w-5 h-5 text-orange-500" />
-                            5-Day Forecast
+                            {t('forecast_5_day')}
                         </h2>
 
                         <div className="space-y-6">
@@ -217,9 +220,9 @@ export default function WeatherPage() {
                             <Sun className="w-5 h-5 text-orange-600" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-gray-800 text-sm">Planning Tip</h3>
+                            <h3 className="font-bold text-gray-800 text-sm">{t('planning_tip')}</h3>
                             <p className="text-sm text-gray-600 leading-relaxed mt-1">
-                                Heavy rain expected on Friday (80%). Consider delaying irrigation until Saturday to save water.
+                                {t('planning_tip_desc')}
                             </p>
                         </div>
                     </div>

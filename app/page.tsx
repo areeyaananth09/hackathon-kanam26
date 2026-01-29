@@ -121,13 +121,13 @@ export default function Home() {
               </div>
               <div>
                 <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">
-                  Why Essential Resources Are Being Wasted
+                  {t('why_resources_wasted_title')}
                 </h2>
                 <p className="text-lg text-gray-600 mb-6">
-                  Traditional irrigation practices often fail to account for the dynamic nature of weather and soil needs. Without precise data, farmers are forced to guess, risking their harvest and depleting valuable water resources.
+                  {t('why_resources_wasted_desc')}
                 </p>
                 <p className="text-lg text-gray-600 font-medium border-l-4 border-green-500 pl-4 bg-green-50/50 py-2">
-                  "Small farmers need a solution that bridges the gap between traditional knowledge and modern precision."
+                  "{t('expert_quote')}"
                 </p>
               </div>
             </div>
@@ -140,10 +140,10 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-                The Smart Solution
+                {t('smart_solution_title')}
               </h2>
               <p className="text-green-100 text-lg">
-                We empower farmers with a simple, software-based system that turns complex data into actionable daily plans.
+                {t('smart_solution_desc')}
               </p>
             </div>
 
@@ -153,9 +153,9 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-lg bg-sky-500/20 flex items-center justify-center mb-6">
                   <CloudSun className="h-8 w-8 text-sky-300" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Weather Analytics</h3>
+                <h3 className="text-xl font-bold mb-3">{t('feature_weather_title')}</h3>
                 <p className="text-green-100">
-                  Real-time analysis of rain forecasts and heatwaves to adjust schedules automatically, preventing water logging or drought stress.
+                  {t('feature_weather_desc')}
                 </p>
               </div>
 
@@ -164,9 +164,9 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-lg bg-green-500/20 flex items-center justify-center mb-6">
                   <Droplets className="h-8 w-8 text-green-300" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Smart Plans</h3>
+                <h3 className="text-xl font-bold mb-3">{t('feature_plans_title')}</h3>
                 <p className="text-green-100">
-                  Receive daily notifications on exactly when to irrigate, how much water to use, or when to skip watering entirely.
+                  {t('feature_plans_desc')}
                 </p>
               </div>
 
@@ -175,9 +175,9 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-lg bg-amber-500/20 flex items-center justify-center mb-6">
                   <BarChart3 className="h-8 w-8 text-amber-300" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">Yield Optimization</h3>
+                <h3 className="text-xl font-bold mb-3">{t('feature_yield_title')}</h3>
                 <p className="text-green-100">
-                  Maintain optimal soil moisture levels to boost crop health and agricultural productivity while reducing costs.
+                  {t('feature_yield_desc')}
                 </p>
               </div>
             </div>
@@ -189,16 +189,16 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="bg-sky-50 rounded-3xl p-8 sm:p-16 text-center border border-sky-100">
               <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">
-                Ready to optimize your farm?
+                {t('ready_optimize_title')}
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of small farmers who are saving water and growing better crops with {t('brand')} tommorow.
+                {t('ready_optimize_desc')}
               </p>
               <Link
                 href="/signup"
                 className="inline-flex items-center justify-center rounded-xl bg-green-600 px-8 py-4 text-lg font-bold text-white shadow-lg hover:bg-green-500 transition-all"
               >
-                Create Free Account
+                {t('create_free_account')}
               </Link>
             </div>
           </div>

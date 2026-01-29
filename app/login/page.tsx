@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, KeyRound } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LoginPage() {
+    const { t } = useLanguage();
     const [showPassword, setShowPassword] = useState(false);
     const [useOTP, setUseOTP] = useState(true); // Default to OTP as requested
     const [otpSent, setOtpSent] = useState(false);
@@ -96,15 +98,15 @@ export default function LoginPage() {
                 <div className="p-8">
                     <div className="text-center mb-8">
                         <h1 className="text-2xl font-bold text-gray-800 leading-tight">
-                            Smart Irrigation <br />
-                            <span className="text-green-600">Scheduling Analytics</span>
+                            {t('login_title_1')} <br />
+                            <span className="text-green-600">{t('login_title_2')}</span>
                         </h1>
-                        <p className="text-gray-500 mt-2 text-sm">Welcome back, farmer!</p>
+                        <p className="text-gray-500 mt-2 text-sm">{t('login_welcome')}</p>
                     </div>
 
                     <div className="space-y-5">
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="email">Email Address</label>
+                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="email">{t('label_email')}</label>
                             <div className="relative">
                                 <input
                                     id="email"
@@ -112,7 +114,7 @@ export default function LoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                    placeholder="name@example.com"
+                                    placeholder={t('placeholder_email')}
                                     disabled={otpSent && useOTP}
                                 />
                                 <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
@@ -123,7 +125,7 @@ export default function LoginPage() {
                             <>
                                 {otpSent ? (
                                     <div className="space-y-1 animation-fade-in">
-                                        <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="otp">Enter Verification Code</label>
+                                        <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="otp">{t('label_otp')}</label>
                                         <div className="relative">
                                             <input
                                                 id="otp"
@@ -131,7 +133,7 @@ export default function LoginPage() {
                                                 value={otp}
                                                 onChange={(e) => setOtp(e.target.value)}
                                                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400 tracking-widest font-mono"
-                                                placeholder="123456"
+                                                placeholder={t('placeholder_otp')}
                                             />
                                             <KeyRound className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                                         </div>
@@ -143,14 +145,14 @@ export default function LoginPage() {
                                     disabled={loading}
                                     className="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    {loading ? 'Processing...' : (otpSent ? 'Verify & Sign In' : 'Send Login Code')}
+                                    {loading ? t('btn_processing') : (otpSent ? t('btn_verify_signin') : t('btn_send_code'))}
                                     {!loading && !otpSent && <ArrowRight className="w-4 h-4" />}
                                 </button>
                             </>
                         ) : (
                             <>
                                 <div className="space-y-1">
-                                    <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="password">Password</label>
+                                    <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="password">{t('label_password')}</label>
                                     <div className="relative">
                                         <input
                                             id="password"
@@ -158,7 +160,7 @@ export default function LoginPage() {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                            placeholder="Enter your password"
+                                            placeholder={t('placeholder_password')}
                                         />
                                         <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
                                         <button
@@ -171,7 +173,7 @@ export default function LoginPage() {
                                     </div>
                                     <div className="flex justify-end pt-1">
                                         <Link href="/forgot-password" className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">
-                                            Forgot Password?
+                                            {t('forgot_password')}
                                         </Link>
                                     </div>
                                 </div>
@@ -181,7 +183,7 @@ export default function LoginPage() {
                                     disabled={loading}
                                     className="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70"
                                 >
-                                    {loading ? 'Signing In...' : 'Sign In'}
+                                    {loading ? t('btn_signing_in') : t('btn_signin')}
                                 </button>
                             </>
                         )}
@@ -196,7 +198,7 @@ export default function LoginPage() {
                                 }}
                                 className="text-green-600 font-medium hover:underline text-sm"
                             >
-                                {useOTP ? "Login with Password instead" : "Login with Code instead"}
+                                {useOTP ? t('login_with_password') : t('login_with_code')}
                             </button>
                         </div>
                     </div>
@@ -207,7 +209,7 @@ export default function LoginPage() {
                                 <div className="w-full border-t border-gray-200"></div>
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                                <span className="px-2 bg-white text-gray-500">{t('or_continue_with')}</span>
                             </div>
                         </div>
 
@@ -234,14 +236,14 @@ export default function LoginPage() {
                                         fill="#EA4335"
                                     />
                                 </svg>
-                                Continue with Google
+                                {t('continue_google')}
                             </button>
                         </div>
 
                         <p className="mt-8 text-center text-sm text-gray-500">
-                            Don't have an account?{' '}
+                            {t('no_account')}{' '}
                             <Link href="/signup" className="text-green-600 font-semibold hover:underline">
-                                Sign up
+                                {t('sign_up_link')}
                             </Link>
                         </p>
                     </div>

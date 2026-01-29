@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { MapPin, Calendar, Sprout, ChevronDown, ArrowRight, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function OnboardingPage() {
+    const { t } = useLanguage();
     const [cropType, setCropType] = useState('');
     const [location, setLocation] = useState('');
     const [date, setDate] = useState('');
@@ -107,8 +109,8 @@ export default function OnboardingPage() {
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30 shadow-lg">
                             <Sprout className="w-8 h-8 text-white" />
                         </div>
-                        <h1 className="text-3xl font-bold drop-shadow-md">Let's Set Up Your Farm</h1>
-                        <p className="text-green-50 text-base mt-2 drop-shadow-sm font-medium">We just need a few details to get started.</p>
+                        <h1 className="text-3xl font-bold drop-shadow-md">{t('onboarding_title')}</h1>
+                        <p className="text-green-50 text-base mt-2 drop-shadow-sm font-medium">{t('onboarding_subtitle')}</p>
                     </div>
                 </div>
 
@@ -117,7 +119,7 @@ export default function OnboardingPage() {
 
                         {/* Crop Type Selector */}
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700 ml-1">What are you growing?</label>
+                            <label className="text-sm font-semibold text-gray-700 ml-1">{t('label_crop_type')}</label>
                             <div className="relative group">
                                 <select
                                     className="w-full appearance-none pl-12 pr-10 py-4 rounded-xl border border-gray-200 bg-gray-50 focus:border-green-500 focus:ring-2 focus:ring-green-100 outline-none transition-all text-gray-800 cursor-pointer"
@@ -125,13 +127,13 @@ export default function OnboardingPage() {
                                     onChange={(e) => setCropType(e.target.value)}
                                     required
                                 >
-                                    <option value="" disabled>Select Crop Type</option>
-                                    <option value="rice">Rice (Paddy)</option>
-                                    <option value="wheat">Wheat</option>
-                                    <option value="corn">Corn (Maize)</option>
-                                    <option value="vegetables">Vegetables</option>
-                                    <option value="sugarcane">Sugarcane</option>
-                                    <option value="cotton">Cotton</option>
+                                    <option value="" disabled>{t('placeholder_select_crop')}</option>
+                                    <option value="rice">{t('crop_rice')}</option>
+                                    <option value="wheat">{t('crop_wheat')}</option>
+                                    <option value="corn">{t('crop_corn')}</option>
+                                    <option value="vegetables">{t('crop_vegetables')}</option>
+                                    <option value="sugarcane">{t('crop_sugarcane')}</option>
+                                    <option value="cotton">{t('crop_cotton')}</option>
                                 </select>
                                 <Sprout className="w-5 h-5 text-green-600 absolute left-4 top-4.5" />
                                 <ChevronDown className="w-5 h-5 text-gray-400 absolute right-4 top-4.5 pointer-events-none group-hover:text-green-600 transition-colors" />
@@ -140,24 +142,24 @@ export default function OnboardingPage() {
 
                         {/* Location Input */}
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700 ml-1">Where is your farm located?</label>
+                            <label className="text-sm font-semibold text-gray-700 ml-1">{t('label_location')}</label>
                             <div className="relative">
                                 <input
                                     type="text"
                                     className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 bg-gray-50 focus:border-green-500 focus:ring-2 focus:ring-green-100 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                    placeholder="Enter city or village"
+                                    placeholder={t('placeholder_location')}
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
                                     required
                                 />
                                 <MapPin className="w-5 h-5 text-green-600 absolute left-4 top-4.5" />
                             </div>
-                            <p className="text-xs text-gray-400 ml-1">We need this for accurate weather data.</p>
+                            <p className="text-xs text-gray-400 ml-1">{t('hint_location')}</p>
                         </div>
 
                         {/* Planting Date Picker */}
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700 ml-1">When did you plant this crop?</label>
+                            <label className="text-sm font-semibold text-gray-700 ml-1">{t('label_planting_date')}</label>
                             <div className="relative">
                                 <input
                                     type="date"
@@ -172,7 +174,7 @@ export default function OnboardingPage() {
 
                         {/* Last Irrigated Picker */}
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700 ml-1">When did you last irrigate?</label>
+                            <label className="text-sm font-semibold text-gray-700 ml-1">{t('label_last_irrigated')}</label>
                             <div className="relative">
                                 <input
                                     type="date"
@@ -193,11 +195,11 @@ export default function OnboardingPage() {
                                 {loading ? (
                                     <>
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        Processing...
+                                        {t('btn_processing')}
                                     </>
                                 ) : (
                                     <>
-                                        Generate Smart Schedule
+                                        {t('btn_generate_schedule')}
                                         <ArrowRight className="w-5 h-5" />
                                     </>
                                 )}

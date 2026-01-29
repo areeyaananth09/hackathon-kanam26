@@ -129,13 +129,13 @@ export default function DashboardPage() {
                             {isIrrigate && (
                                 <div className="bg-white text-[#0EA5E9] font-bold py-3 px-6 rounded-xl inline-flex items-center gap-2 shadow-sm">
                                     <Droplets className="w-5 h-5" />
-                                    Duration: {decision.durationMinutes} Mins
+                                    {t('duration_label')}: {decision.durationMinutes} {t('mins')}
                                 </div>
                             )}
                             {!isIrrigate && (
                                 <div className="bg-white text-green-600 font-bold py-3 px-6 rounded-xl inline-flex items-center gap-2 shadow-sm">
                                     <Sprout className="w-5 h-5" />
-                                    Save Water Today
+                                    {t('save_water_today')}
                                 </div>
                             )}
                         </div>
@@ -155,8 +155,8 @@ export default function DashboardPage() {
 
                     <div className="relative pt-2 pb-6">
                         <div className="flex mb-2 items-center justify-between text-xs text-gray-500 font-medium">
-                            <span>Dry</span>
-                            <span>Wet</span>
+                            <span>{t('dry')}</span>
+                            <span>{t('wet')}</span>
                         </div>
                         <div className="overflow-hidden h-3 mb-4 text-xs flex rounded-full bg-gray-100">
                             <div
@@ -167,7 +167,7 @@ export default function DashboardPage() {
                             ></div>
                         </div>
                         <div className="text-center text-gray-500 text-sm">
-                            Estimated Status: <span className="font-bold text-gray-800">{moistureLevel}</span>
+                            {t('estimated_status')}: <span className="font-bold text-gray-800">{moistureLevel}</span>
                         </div>
                     </div>
                 </div>
@@ -181,7 +181,7 @@ export default function DashboardPage() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-gray-800">{t('weather_report')}</h4>
-                                <p className="text-xs text-blue-600">{decision.weatherPreview || 'Check forecast'}</p>
+                                <p className="text-xs text-blue-600">{decision.weatherPreview || t('check_forecast')}</p>
                             </div>
                         </div>
                         <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
@@ -197,7 +197,7 @@ export default function DashboardPage() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-gray-800">{t('crop_analytics')}</h4>
-                                <p className="text-xs text-green-600">Track GDD & Stages</p>
+                                <p className="text-xs text-green-600">{t('track_gdd')}</p>
                             </div>
                         </div>
                         <ArrowRight className="w-5 h-5 text-green-400 group-hover:translate-x-1 transition-transform" />
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-gray-800">{t('smart_control')}</h4>
-                                <p className="text-xs text-cyan-600">Manual Override & Timer</p>
+                                <p className="text-xs text-cyan-600">{t('manual_override')}</p>
                             </div>
                         </div>
                         <ArrowRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" />

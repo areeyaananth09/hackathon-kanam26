@@ -7,8 +7,10 @@ import { useRouter } from 'next/navigation';
 import { getWeather } from '@/app/actions/getWeather';
 import { getFarmDetails } from '@/app/actions/getFarmDetails';
 import { authClient } from '@/lib/auth-client';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function WaterCalculatorPage() {
+    const { t } = useLanguage();
     const router = useRouter();
 
     // Inputs
@@ -18,7 +20,7 @@ export default function WaterCalculatorPage() {
 
     // Environmental Data (Auto-Fetched)
     const [temp, setTemp] = useState<number | null>(null);
-    const [location, setLocation] = useState('Detecting Location...');
+    const [location, setLocation] = useState(t('detecting_location'));
     const [isLoadingWeather, setIsLoadingWeather] = useState(true);
 
     // Results
@@ -118,7 +120,7 @@ export default function WaterCalculatorPage() {
                 <Link href="/dashboard" className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-50">
                     <ArrowLeft className="w-5 h-5 text-gray-600" />
                 </Link>
-                <h1 className="text-xl font-bold text-gray-800">AI Water Calculator</h1>
+                <h1 className="text-xl font-bold text-gray-800">{t('ai_water_calculator')}</h1>
             </div>
 
             <div className="max-w-xl mx-auto space-y-6">
@@ -127,15 +129,15 @@ export default function WaterCalculatorPage() {
                 <div className="bg-blue-50 rounded-3xl p-6 border border-blue-100">
                     <h2 className="text-sm font-bold text-blue-800 mb-4 flex items-center gap-2 uppercase tracking-wide">
                         <MapPin className="w-4 h-4" />
-                        Detected Environment
+                        {t('detected_environment')}
                     </h2>
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs text-blue-400 font-bold mb-1">LOCATION</p>
+                            <p className="text-xs text-blue-400 font-bold mb-1">{t('location_caps')}</p>
                             <p className="text-lg text-blue-900 font-bold">{location}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-blue-400 font-bold mb-1">TEMPERATURE</p>
+                            <p className="text-xs text-blue-400 font-bold mb-1">{t('temperature_caps')}</p>
                             {isLoadingWeather ? (
                                 <Loader2 className="w-5 h-5 animate-spin text-blue-500 ml-auto" />
                             ) : (
@@ -152,13 +154,13 @@ export default function WaterCalculatorPage() {
                 <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#E9F4E3]">
                     <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <Sprout className="w-5 h-5 text-green-600" />
-                        Crop Details
+                        {t('crop_details')}
                     </h2>
 
                     <div className="space-y-4">
                         {/* Crop Type */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">Crop Type</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">{t('crop_type')}</label>
                             <select
                                 value={crop}
                                 onChange={(e) => setCrop(e.target.value)}
@@ -170,21 +172,21 @@ export default function WaterCalculatorPage() {
 
                         {/* Soil Type */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">Soil Type</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">{t('soil_type')}</label>
                             <select
                                 value={soil}
                                 onChange={(e) => setSoil(e.target.value)}
                                 className="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-700 font-medium appearance-none"
                             >
-                                <option value="Clay">Clay</option>
-                                <option value="Loamy">Loamy</option>
-                                <option value="Sandy">Sandy</option>
+                                <option value="Clay">{t('soil_clay')}</option>
+                                <option value="Loamy">{t('soil_loamy')}</option>
+                                <option value="Sandy">{t('soil_sandy')}</option>
                             </select>
                         </div>
 
                         {/* Count */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">Number of Plants</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">{t('number_plants')}</label>
                             <input
                                 type="number"
                                 value={count}
@@ -199,23 +201,23 @@ export default function WaterCalculatorPage() {
                 {temp !== null && (
                     <div className="bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-6 text-white shadow-xl shadow-green-200">
                         <h2 className="text-green-100 font-medium mb-4 flex items-center justify-between">
-                            AI Calculated Requirement
+                            {t('ai_calculated_req')}
                             <Calculator className="w-5 h-5 text-green-200" />
                         </h2>
 
                         <div className="flex items-end gap-2 mb-2">
                             <span className="text-5xl font-bold">{totalWater}</span>
-                            <span className="text-xl font-medium mb-1 text-green-100">Liters Total</span>
+                            <span className="text-xl font-medium mb-1 text-green-100">{t('liters_total')}</span>
                         </div>
 
                         <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20 mb-6 space-y-2">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-green-50">Per Plant</span>
+                                <span className="text-green-50">{t('per_plant')}</span>
                                 <span className="font-bold">{waterPerPlant} L</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-green-50">Irrigation Duration</span>
-                                <span className="font-bold">{durationMins} Mins</span>
+                                <span className="text-green-50">{t('irrigation_duration')}</span>
+                                <span className="font-bold">{durationMins} {t('mins')}</span>
                             </div>
                         </div>
 
@@ -223,11 +225,11 @@ export default function WaterCalculatorPage() {
                             onClick={handleApply}
                             className="w-full py-4 bg-white text-green-700 font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-green-50 transition-colors shadow-lg"
                         >
-                            Set Auto-Irrigation
+                            {t('set_auto_irrigation')}
                             <ArrowRight className="w-5 h-5" />
                         </button>
                         <p className="text-center text-[10px] text-green-200/60 mt-2">
-                            Schedule locked to AI Calculation
+                            {t('schedule_locked')}
                         </p>
                     </div>
                 )}

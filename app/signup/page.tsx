@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SignupPage() {
+    const { t } = useLanguage();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -73,14 +75,14 @@ export default function SignupPage() {
                 <div className="p-8 pt-6">
                     <div className="text-center mb-6">
                         <h1 className="text-2xl font-bold text-gray-800">
-                            Join SmartIrrigate
+                            {t('signup_title')}
                         </h1>
-                        <p className="text-gray-500 mt-1 text-sm">Start your data-driven farming journey</p>
+                        <p className="text-gray-500 mt-1 text-sm">{t('signup_subtitle')}</p>
                     </div>
 
                     <form className="space-y-4" onSubmit={handleSignUp}>
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="fullname">Full Name</label>
+                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="fullname">{t('label_fullname')}</label>
                             <div className="relative">
                                 <input
                                     id="fullname"
@@ -88,7 +90,7 @@ export default function SignupPage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                    placeholder="John Farmer"
+                                    placeholder={t('placeholder_fullname')}
                                     required
                                 />
                                 <User className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
@@ -96,7 +98,7 @@ export default function SignupPage() {
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="email">Email Address</label>
+                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="email">{t('label_email')}</label>
                             <div className="relative">
                                 <input
                                     id="email"
@@ -104,7 +106,7 @@ export default function SignupPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                    placeholder="name@example.com"
+                                    placeholder={t('placeholder_email')}
                                     required
                                 />
                                 <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
@@ -112,7 +114,7 @@ export default function SignupPage() {
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="password">Password</label>
+                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="password">{t('label_password')}</label>
                             <div className="relative">
                                 <input
                                     id="password"
@@ -136,7 +138,7 @@ export default function SignupPage() {
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="confirm-password">Confirm Password</label>
+                            <label className="text-sm font-medium text-gray-700 ml-1" htmlFor="confirm-password">{t('label_confirm_password')}</label>
                             <div className="relative">
                                 <input
                                     id="confirm-password"
@@ -144,7 +146,7 @@ export default function SignupPage() {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 bg-gray-50 outline-none transition-all text-gray-800 placeholder:text-gray-400"
-                                    placeholder="Confirm your password"
+                                    placeholder={t('placeholder_confirm_password')}
                                     required
                                 />
                                 <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
@@ -166,9 +168,9 @@ export default function SignupPage() {
                             {loading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    Creating Account...
+                                    {t('btn_creating_account')}
                                 </>
-                            ) : "Create Account"}
+                            ) : t('btn_create_account')}
                         </button>
                     </form>
 
@@ -178,7 +180,7 @@ export default function SignupPage() {
                                 <div className="w-full border-t border-gray-200"></div>
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">Or sign up with</span>
+                                <span className="px-2 bg-white text-gray-500">{t('or_signup_with')}</span>
                             </div>
                         </div>
 
@@ -210,14 +212,14 @@ export default function SignupPage() {
                                         fill="#EA4335"
                                     />
                                 </svg>
-                                Continue with Google
+                                {t('continue_google')}
                             </button>
                         </div>
 
                         <p className="mt-6 text-center text-sm text-gray-500">
-                            Already have an account?{' '}
+                            {t('already_have_account')}{' '}
                             <Link href="/login" className="text-green-600 font-semibold hover:underline">
-                                Sign in
+                                {t('sign_in_link')}
                             </Link>
                         </p>
                     </div>
