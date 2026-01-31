@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getPool } from '@/backend/lib/db';
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
-});
+const pool = getPool();
 
 // Helper to generate mock temperature based on latitude and day of year
 function getMockWeather(lat: number, date: Date) {

@@ -1,13 +1,10 @@
 'use server';
 
-import { Pool } from 'pg';
+import { getPool } from '@/backend/lib/db';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth'; // Ensure this path is correct for server-side auth
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+const pool = getPool();
 
 export async function getFarmDetails(userId: string) {
     if (!userId) return null;

@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { getPool } from "@/backend/lib/db";
+import { getPool } from "./db";
 import { emailOTP } from "better-auth/plugins";
 import { createTransport } from "nodemailer";
 

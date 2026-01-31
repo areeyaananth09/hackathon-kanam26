@@ -18,6 +18,62 @@ const translations: Translations = {
         'hero_badge': 'The Future of Farming is Here',
         'hero_title_1': 'Grow More with',
         'hero_title_2': 'Intelligent Irrigation',
+
+        // Navigation & Common
+        'back_dashboard': 'Back to Dashboard',
+        'loading': 'Loading...',
+
+        // Analytics
+        'crop_growth_analytics': 'Crop Analytics',
+        'crop_configuration': 'Configuration',
+        'planting_date': 'Planting Date',
+        'growth_analysis': 'Growth',
+        'water_saved': 'Water Saved',
+        'current_status': 'Current Status',
+        'growth_trajectory': 'Trajectory',
+        'efficiency_comparison': 'Efficiency',
+        'total_saved': 'Total Saved',
+        'traditional_usage': 'Traditional',
+        'smart_usage': 'Smart Usage',
+        'show_report': 'Show Report',
+        'analyzing': 'Analyzing...',
+        'no_data': 'No Data',
+        'processing_data': 'Processing Data...',
+        'latitude': 'Latitude',
+        'longitude': 'Longitude',
+        'total_duration': 'Total Duration (Days)',
+        'start_date': 'Start Date',
+        'latest_reading': 'Latest Reading',
+        'growth_stages_reference': 'Growth Stages Reference',
+        'stage_growth_pct': 'Growth %',
+        'stage_bio_stage': 'Biological Stage',
+        'stage_meaning': 'Meaning',
+        'stage_germination': 'Low Germination',
+        'stage_germination_desc': 'Seed just started sprouting',
+        'stage_active': 'Active Growth',
+        'stage_active_desc': 'Roots and shoots forming',
+        'stage_maturation': 'Maturation',
+        'stage_maturation_desc': 'Flowering and grain filling',
+
+        // Profile
+        'profile_title': 'My Profile',
+        'member_since': 'Member',
+        'email': 'Email',
+        'farm_location': 'Farm Location',
+        'primary_crop': 'Primary Crop',
+        'edit_farm_details': 'Edit Details',
+
+        // Settings
+        'settings_title': 'Settings',
+        'manage_preferences': 'Preferences',
+        'account': 'Account',
+        'profile_settings': 'Profile Settings',
+        'notification_preferences': 'Notifications',
+        'legal_support': 'Legal & Support',
+        'privacy_policy': 'Privacy Policy',
+        'terms_conditions': 'Terms & Conditions',
+        'help_feedback': 'Help & Feedback',
+        'log_out': 'Log Out',
         'hero_desc': 'Eliminate the guesswork. SmartIrrigate helps small farmers conserve water and increase crop yields by providing data-driven schedules based on real-time weather and soil conditions.',
         'cta_primary': 'Start Saving Water',
         'cta_secondary': 'See How It Works',
@@ -115,7 +171,6 @@ const translations: Translations = {
         'check_api_config': 'Check API configuration',
         'return_dashboard': 'Return to Dashboard',
         'try_again': 'Try Again',
-        'back_dashboard': 'Back to Dashboard',
         'wind_speed': 'Wind',
         'humidity': 'Humidity',
         'precipitation': 'Precip',
@@ -142,6 +197,55 @@ const translations: Translations = {
         'irrigation_duration': 'Irrigation Duration',
         'set_auto_irrigation': 'Set Auto-Irrigation',
         'schedule_locked': 'Schedule locked to AI Calculation',
+
+        // Irrigation Control Page
+        'irrigation_control': 'Irrigation Control',
+        'running_now': 'RUNNING NOW',
+        'ready_to_start': 'READY TO START',
+        'target': 'Target',
+        'duration_set': 'Duration Set',
+        'ai_locked': 'AI Locked',
+        'set_duration': 'Set Duration',
+        'min': 'MIN',
+        'start_irrigation': 'Start Irrigation',
+        'stop_immediately': 'Stop Immediately',
+        'flow_rate': 'Flow Rate',
+        'water_used': 'Water Used',
+        'irrigation_finished': 'Irrigation finished',
+        'cycle_completed': 'Cycle Completed',
+        'starting_irrigation': 'Starting irrigation for',
+        'minutes': 'minutes',
+        'failed_to_start': 'Failed to start',
+
+        // History Page
+        'irrigation_history': 'Irrigation History',
+        'past_30_days': 'Past 30 days activity',
+        'irrigated': 'Irrigated',
+        'skipped': 'Skipped',
+        'running': 'Running',
+
+        // Schedule Page
+        'daily_planned_schedule': 'Daily Planned Schedule',
+        'time': 'Time',
+        'duration': 'Duration',
+        'continuous_flow': 'Continuous Flow',
+        'why_this_schedule': 'Why this schedule?',
+        'estimated_water': 'Estimated Water',
+        'liters': 'Liters',
+        'accept_schedule': 'Accept Schedule',
+        'skip_override': 'Skip / Override',
+        'override_warning': 'Overriding may affect your yield optimization',
+        'morning': 'Morning',
+        'afternoon': 'Afternoon',
+        'early_morning': 'Early Morning',
+
+        // Profile Edit Page
+        'edit_profile': 'Edit Profile',
+        'save_changes': 'Save Changes',
+        'cancel': 'Cancel',
+        'name': 'Name',
+        'phone': 'Phone',
+        'address': 'Address',
     },
     ta: {
         'brand': 'ஸ்ார்ட் இரிகேட்',
@@ -274,6 +378,55 @@ const translations: Translations = {
         'irrigation_duration': 'நீர்ப்பாசன காலம்',
         'set_auto_irrigation': 'தானியங்கி நீர்ப்பாசனத்தை அமைக்கவும்',
         'schedule_locked': 'அட்டவணை AI கணக்கீட்டிற்கு பூட்டப்பட்டுள்ளது',
+
+        // Irrigation Control Page
+        'irrigation_control': 'நீர்ப்பாசன கட்டுப்பாடு',
+        'running_now': 'இப்போது இயங்குகிறது',
+        'ready_to_start': 'தொடங்க தயார்',
+        'target': 'இலக்கு',
+        'duration_set': 'கால அளவு அமைக்கப்பட்டது',
+        'ai_locked': 'AI பூட்டப்பட்டது',
+        'set_duration': 'கால அளவை அமைக்கவும்',
+        'min': 'நிமிடம்',
+        'start_irrigation': 'நீர்ப்பாசனத்தைத் தொடங்கவும்',
+        'stop_immediately': 'உடனடியாக நிறுத்தவும்',
+        'flow_rate': 'ஓட்ட வீதம்',
+        'water_used': 'பயன்படுத்திய நீர்',
+        'irrigation_finished': 'நீர்ப்பாசனம் முடிந்தது',
+        'cycle_completed': 'சுழற்சி முடிந்தது',
+        'starting_irrigation': 'நீர்ப்பாசனம் தொடங்குகிறது',
+        'minutes': 'நிமிடங்கள்',
+        'failed_to_start': 'தொடங்க முடியவில்லை',
+
+        // History Page
+        'irrigation_history': 'நீர்ப்பாசன வரலாறு',
+        'past_30_days': 'கடந்த 30 நாட்கள் செயல்பாடு',
+        'irrigated': 'நீர் பாய்ச்சப்பட்டது',
+        'skipped': 'தவிர்க்கப்பட்டது',
+        'running': 'இயங்குகிறது',
+
+        // Schedule Page
+        'daily_planned_schedule': 'தினசரி திட்டமிடப்பட்ட அட்டவணை',
+        'time': 'நேரம்',
+        'duration': 'கால அளவு',
+        'continuous_flow': 'தொடர்ச்சியான ஓட்டம்',
+        'why_this_schedule': 'ஏன் இந்த அட்டவணை?',
+        'estimated_water': 'மதிப்பிடப்பட்ட நீர்',
+        'liters': 'லிட்டர்கள்',
+        'accept_schedule': 'அட்டவணையை ஏற்கவும்',
+        'skip_override': 'தவிர்க்க / மாற்றவும்',
+        'override_warning': 'மாற்றுவது உங்கள் விளைச்சல் மேம்படுத்தலை பாதிக்கலாம்',
+        'morning': 'காலை',
+        'afternoon': 'மதியம்',
+        'early_morning': 'அதிகாலை',
+
+        // Profile Edit Page
+        'edit_profile': 'சுயவிவரத்தைத் திருத்து',
+        'save_changes': 'மாற்றங்களைச் சேமி',
+        'cancel': 'ரத்து செய்',
+        'name': 'பெயர்',
+        'phone': 'தொலைபேசி',
+        'address': 'முகவரி',
     },
     hi: {
         'brand': 'स्मार्ट इरिगेट',
@@ -406,6 +559,55 @@ const translations: Translations = {
         'irrigation_duration': 'सिंचाई अवधि',
         'set_auto_irrigation': 'स्वचालित सिंचाई सेट करें',
         'schedule_locked': 'शेड्यूल AI गणना के लिए लॉक है',
+
+        // Irrigation Control Page
+        'irrigation_control': 'सिंचाई नियंत्रण',
+        'running_now': 'अभी चल रहा है',
+        'ready_to_start': 'शुरू करने के लिए तैयार',
+        'target': 'लक्ष्य',
+        'duration_set': 'अवधि सेट',
+        'ai_locked': 'AI लॉक',
+        'set_duration': 'अवधि सेट करें',
+        'min': 'मिनट',
+        'start_irrigation': 'सिंचाई शुरू करें',
+        'stop_immediately': 'तुरंत रोकें',
+        'flow_rate': 'प्रवाह दर',
+        'water_used': 'उपयोग किया गया पानी',
+        'irrigation_finished': 'सिंचाई समाप्त',
+        'cycle_completed': 'चक्र पूर्ण',
+        'starting_irrigation': 'सिंचाई शुरू हो रही है',
+        'minutes': 'मिनट',
+        'failed_to_start': 'शुरू करने में विफल',
+
+        // History Page
+        'irrigation_history': 'सिंचाई इतिहास',
+        'past_30_days': 'पिछले 30 दिनों की गतिविधि',
+        'irrigated': 'सिंचाई की गई',
+        'skipped': 'छोड़ा गया',
+        'running': 'चल रहा है',
+
+        // Schedule Page
+        'daily_planned_schedule': 'दैनिक नियोजित कार्यक्रम',
+        'time': 'समय',
+        'duration': 'अवधि',
+        'continuous_flow': 'निरंतर प्रवाह',
+        'why_this_schedule': 'यह कार्यक्रम क्यों?',
+        'estimated_water': 'अनुमानित पानी',
+        'liters': 'लीटर',
+        'accept_schedule': 'कार्यक्रम स्वीकार करें',
+        'skip_override': 'छोड़ें / ओवरराइड करें',
+        'override_warning': 'ओवरराइड करने से आपकी उपज अनुकूलन प्रभावित हो सकता है',
+        'morning': 'सुबह',
+        'afternoon': 'दोपहर',
+        'early_morning': 'सुबह जल्दी',
+
+        // Profile Edit Page
+        'edit_profile': 'प्रोफ़ाइल संपादित करें',
+        'save_changes': 'परिवर्तन सहेजें',
+        'cancel': 'रद्द करें',
+        'name': 'नाम',
+        'phone': 'फ़ोन',
+        'address': 'पता',
     }
 };
 
@@ -413,6 +615,7 @@ type LanguageContextType = {
     language: Language;
     setLanguage: (lang: Language) => void;
     t: (key: string) => string;
+    speak: (key: string) => void;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -425,6 +628,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         if (savedLang && (savedLang === 'en' || savedLang === 'ta' || savedLang === 'hi')) {
             setLanguage(savedLang);
         }
+
+        // Initialize voices for speech synthesis
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            // Load voices (they load asynchronously)
+            window.speechSynthesis.getVoices();
+
+            // Listen for voices changed event
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
     }, []);
 
     const handleSetLanguage = (lang: Language) => {
@@ -436,8 +650,118 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         return translations[language][key] || key;
     };
 
+    const speak = (textOrKey: string) => {
+        if (typeof window !== 'undefined') {
+            // Try to translate if it's a key, otherwise speak the text
+            let textToSpeak = translations[language][textOrKey] || textOrKey;
+
+            // If we're not in English and the text wasn't found in translations,
+            // it might be raw English text from API - try to translate common phrases
+            if (language !== 'en' && textToSpeak === textOrKey && !translations[language][textOrKey]) {
+                // Common API response patterns to translate - word by word
+                const englishToKeyMap: { [key: string]: string } = {
+                    // Weather patterns
+                    'Heavy rain forecast': language === 'ta' ? 'பலத்த மழை எதிர்பார்க்கப்படுகிறது' : 'भारी बारिश का पूर्वानुमान',
+                    'Saving water': language === 'ta' ? 'தண்ணீரைச் சேமிக்கிறது' : 'पानी बचा रहे हैं',
+                    // Moisture patterns
+                    'is sufficient': language === 'ta' ? 'போதுமானது' : 'पर्याप्त है',
+                    'is below dynamic threshold': language === 'ta' ? 'மாறும் வரம்புக்குக் கீழே உள்ளது' : 'गतिशील सीमा से नीचे है',
+                    'Moisture': language === 'ta' ? 'ஈரப்பதம்' : 'नमी',
+                    'Threshold': language === 'ta' ? 'வரம்பு' : 'सीमा',
+                    // Stage patterns
+                    'for': language === 'ta' ? 'க்கான' : 'के लिए',
+                    'stage': language === 'ta' ? 'நிலை' : 'चरण',
+                    // Growth stages
+                    'Generic Growth': language === 'ta' ? 'பொது வளர்ச்சி' : 'सामान्य विकास',
+                    'Germination': language === 'ta' ? 'முளைப்பு' : 'अंकुरण',
+                    'Vegetative': language === 'ta' ? 'தாவர வளர்ச்சி' : 'वानस्पतिक विकास',
+                    'Flowering': language === 'ta' ? 'பூக்கும் நிலை' : 'फूल आना',
+                    'Maturation': language === 'ta' ? 'முதிர்ச்சி' : 'परिपक्वता',
+                };
+
+                // Check if the text matches any known pattern
+                for (const [englishPhrase, translatedText] of Object.entries(englishToKeyMap)) {
+                    textToSpeak = textToSpeak.replace(new RegExp(englishPhrase, 'gi'), translatedText);
+                }
+            }
+
+            // Set the language code
+            let targetLang = 'en-US';
+            let googleTTSLang = 'en';
+
+            if (language === 'ta') {
+                targetLang = 'ta-IN';
+                googleTTSLang = 'ta';
+            } else if (language === 'hi') {
+                targetLang = 'hi-IN';
+                googleTTSLang = 'hi';
+            }
+
+            // Try browser's native speech synthesis first
+            if ('speechSynthesis' in window) {
+                const voices = window.speechSynthesis.getVoices();
+
+                // Find a voice that matches the target language
+                const matchingVoice = voices.find(voice =>
+                    voice.lang.toLowerCase().includes(targetLang.split('-')[0])
+                );
+
+                if (matchingVoice) {
+                    // Native voice found - use it!
+                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = targetLang;
+                    utterance.voice = matchingVoice;
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utterance);
+                    return;
+                }
+            }
+
+            // Fallback: Use Google Translate TTS for Tamil/Hindi if native voice not available
+            // This works without any API key and is completely free!
+            if (language === 'ta' || language === 'hi') {
+                try {
+                    // Create audio element for Google TTS
+                    const audio = new Audio();
+                    // Google Translate TTS endpoint (free, no auth required)
+                    const encodedText = encodeURIComponent(textToSpeak);
+                    audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${googleTTSLang}&client=tw-ob&q=${encodedText}`;
+
+                    // Play the audio
+                    audio.play().catch(err => {
+                        console.warn('Google TTS failed, falling back to native speech:', err);
+                        // Final fallback: use native speech even if it sounds wrong
+                        if ('speechSynthesis' in window) {
+                            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                            utterance.lang = targetLang;
+                            window.speechSynthesis.cancel();
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Speech synthesis error:', error);
+                    // Final fallback
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                        utterance.lang = targetLang;
+                        window.speechSynthesis.cancel();
+                        window.speechSynthesis.speak(utterance);
+                    }
+                }
+            } else {
+                // For English, use native speech synthesis
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = targetLang;
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }
+    };
+
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t, speak }}>
             {children}
         </LanguageContext.Provider>
     );

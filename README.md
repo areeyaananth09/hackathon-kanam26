@@ -1,5 +1,28 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## 📂 Project Organization
+
+This project is organized to clearly separate **Frontend** (UI) and **Backend** (server logic) code:
+
+- **Frontend**: Pages and UI components in `app/[page-name]/`
+- **Backend**: API routes in `app/api/`, server actions in `app/actions/`, and utilities in `backend/`
+
+### 📚 Documentation
+
+- **[ORGANIZATION_GUIDE.md](./ORGANIZATION_GUIDE.md)** - Complete guide to project organization
+- **[DIRECTORY_TREE.md](./DIRECTORY_TREE.md)** - Visual directory tree
+- **[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)** - Detailed structure documentation
+
+### 🔍 Quick Reference
+
+| Working on... | Look in... |
+|---------------|------------|
+| UI Pages | `app/[page-name]/page.tsx` |
+| API Endpoints | `app/api/[endpoint]/route.ts` |
+| Server Actions | `app/actions/[action].ts` |
+| Database | `backend/database/` |
+| Backend Utils | `backend/lib/` |
+
 ## Getting Started
 
 First, run the development server:

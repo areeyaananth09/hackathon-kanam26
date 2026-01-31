@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Droplets, Thermometer, Sprout, CloudRain, Calculator, ArrowRight, MapPin, Loader2 } from 'lucide-react';
+import { ArrowLeft, Droplets, Thermometer, Sprout, Calculator, ArrowRight, MapPin, Loader2, Volume2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { getWeather } from '@/app/actions/getWeather';
-import { getFarmDetails } from '@/app/actions/getFarmDetails';
+import { getWeather } from '@/backend/actions/getWeather';
+import { getFarmDetails } from '@/backend/actions/getFarmDetails';
 import { authClient } from '@/lib/auth-client';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function WaterCalculatorPage() {
-    const { t } = useLanguage();
+    const { t, speak } = useLanguage();
     const router = useRouter();
 
     // Inputs
@@ -114,126 +114,153 @@ export default function WaterCalculatorPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAF5] p-6 pb-24">
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-8">
-                <Link href="/dashboard" className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-50">
-                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-24">
+            {/* Header - High Contrast */}
+            <div className="bg-[var(--card-bg)] border-b-2 border-[var(--card-border)] p-4 sticky top-0 z-20 flex items-center gap-4">
+                <Link href="/dashboard" className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="text-xl font-bold text-gray-800">{t('ai_water_calculator')}</h1>
+                <div className="flex-1">
+                    <h1 className="text-xl font-black uppercase tracking-wide">{t('ai_water_calculator')}</h1>
+                </div>
+                <button onClick={() => speak(t('ai_water_calculator'))} className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <Volume2 className="w-6 h-6" />
+                </button>
             </div>
 
-            <div className="max-w-xl mx-auto space-y-6">
+            <main className="p-4 space-y-6 max-w-md mx-auto">
 
-                {/* Environment Card */}
-                <div className="bg-blue-50 rounded-3xl p-6 border border-blue-100">
-                    <h2 className="text-sm font-bold text-blue-800 mb-4 flex items-center gap-2 uppercase tracking-wide">
-                        <MapPin className="w-4 h-4" />
-                        {t('detected_environment')}
-                    </h2>
-                    <div className="flex items-center justify-between">
+                {/* Environment Card - High Contrast */}
+                <section className="bg-blue-50 border-4 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-black uppercase flex items-center gap-2">
+                            <MapPin className="w-6 h-6 text-blue-700" />
+                            {t('detected_environment')}
+                        </h2>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xl font-bold">
                         <div>
-                            <p className="text-xs text-blue-400 font-bold mb-1">{t('location_caps')}</p>
-                            <p className="text-lg text-blue-900 font-bold">{location}</p>
+                            <p className="text-sm font-bold opacity-60 uppercase mb-1">{t('location_caps')}</p>
+                            <p className="text-blue-900 leading-tight">{location}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-blue-400 font-bold mb-1">{t('temperature_caps')}</p>
+                            <p className="text-sm font-bold opacity-60 uppercase mb-1">{t('temperature_caps')}</p>
                             {isLoadingWeather ? (
-                                <Loader2 className="w-5 h-5 animate-spin text-blue-500 ml-auto" />
+                                <Loader2 className="w-6 h-6 animate-spin text-blue-700 ml-auto" />
                             ) : (
-                                <p className="text-lg text-blue-900 font-bold flex items-center gap-1 justify-end">
-                                    <Thermometer className="w-4 h-4" />
+                                <p className="text-blue-900 flex items-center justify-end gap-1">
+                                    <Thermometer className="w-6 h-6" />
                                     {temp}°C
                                 </p>
                             )}
                         </div>
                     </div>
-                </div>
+                </section>
 
-                {/* Inputs Card */}
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#E9F4E3]">
-                    <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <Sprout className="w-5 h-5 text-green-600" />
-                        {t('crop_details')}
-                    </h2>
+                {/* Inputs Card - Large Interactions */}
+                <section className="bg-white border-4 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-black flex items-center gap-2 uppercase">
+                            <Sprout className="w-8 h-8 text-green-700" />
+                            {t('crop_details')}
+                        </h2>
+                        <button onClick={() => speak(t('crop_details'))} className="p-2 border-2 border-black rounded-full hover:bg-gray-100">
+                            <Volume2 className="w-5 h-5" />
+                        </button>
+                    </div>
 
-                    <div className="space-y-4">
-                        {/* Crop Type */}
+                    <div className="space-y-6">
+                        {/* Crop Type - Huge Select */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">{t('crop_type')}</label>
-                            <select
-                                value={crop}
-                                onChange={(e) => setCrop(e.target.value)}
-                                className="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700 font-medium appearance-none"
-                            >
-                                {Object.keys(BWR).map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
+                            <label className="block text-lg font-bold mb-2">{t('crop_type')}</label>
+                            <div className="relative">
+                                <select
+                                    value={crop}
+                                    onChange={(e) => setCrop(e.target.value)}
+                                    className="w-full h-16 pl-4 pr-10 bg-gray-50 border-4 border-black rounded-xl text-xl font-bold appearance-none focus:ring-0 focus:border-green-600"
+                                >
+                                    {Object.keys(BWR).map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                                    <svg className="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Soil Type */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">{t('soil_type')}</label>
-                            <select
-                                value={soil}
-                                onChange={(e) => setSoil(e.target.value)}
-                                className="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-700 font-medium appearance-none"
-                            >
-                                <option value="Clay">{t('soil_clay')}</option>
-                                <option value="Loamy">{t('soil_loamy')}</option>
-                                <option value="Sandy">{t('soil_sandy')}</option>
-                            </select>
+                            <label className="block text-lg font-bold mb-2">{t('soil_type')}</label>
+                            <div className="relative">
+                                <select
+                                    value={soil}
+                                    onChange={(e) => setSoil(e.target.value)}
+                                    className="w-full h-16 pl-4 pr-10 bg-gray-50 border-4 border-black rounded-xl text-xl font-bold appearance-none focus:ring-0 focus:border-amber-600"
+                                >
+                                    <option value="Clay">{t('soil_clay')}</option>
+                                    <option value="Loamy">{t('soil_loamy')}</option>
+                                    <option value="Sandy">{t('soil_sandy')}</option>
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                                    <svg className="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Count */}
+                        {/* Count - Huge Input */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">{t('number_plants')}</label>
+                            <label className="block text-lg font-bold mb-2">{t('number_plants')}</label>
                             <input
                                 type="number"
                                 value={count}
                                 onChange={(e) => setCount(Number(e.target.value))}
-                                className="w-full pl-4 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold text-gray-800"
+                                className="w-full h-16 px-4 bg-gray-50 border-4 border-black rounded-xl text-2xl font-bold focus:outline-none focus:border-blue-600"
                             />
                         </div>
                     </div>
-                </div>
+                </section>
 
                 {/* Results Card */}
                 {temp !== null && (
-                    <div className="bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-6 text-white shadow-xl shadow-green-200">
-                        <h2 className="text-green-100 font-medium mb-4 flex items-center justify-between">
-                            {t('ai_calculated_req')}
-                            <Calculator className="w-5 h-5 text-green-200" />
-                        </h2>
-
-                        <div className="flex items-end gap-2 mb-2">
-                            <span className="text-5xl font-bold">{totalWater}</span>
-                            <span className="text-xl font-medium mb-1 text-green-100">{t('liters_total')}</span>
+                    <section className="bg-green-600 border-4 border-black rounded-xl p-6 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-black uppercase flex items-center gap-2">
+                                <Calculator className="w-8 h-8" />
+                                {t('ai_calculated_req')}
+                            </h2>
+                            <button onClick={() => speak(t('ai_calculated_req') + ' ' + totalWater + ' ' + t('liters_total'))} className="p-2 border-2 border-white rounded-full hover:bg-green-500">
+                                <Volume2 className="w-6 h-6" />
+                            </button>
                         </div>
 
-                        <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20 mb-6 space-y-2">
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-green-50">{t('per_plant')}</span>
-                                <span className="font-bold">{waterPerPlant} L</span>
+                        <div className="border-b-4 border-white/30 pb-4 mb-4">
+                            <div className="flex items-end gap-2">
+                                <span className="text-6xl font-black">{totalWater}</span>
+                                <span className="text-2xl font-bold mb-2 opacity-90">{t('liters_total')}</span>
                             </div>
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-green-50">{t('irrigation_duration')}</span>
-                                <span className="font-bold">{durationMins} {t('mins')}</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div className="bg-black/20 rounded-lg p-3">
+                                <span className="block text-sm font-bold opacity-80 uppercase">{t('per_plant')}</span>
+                                <span className="text-2xl font-bold">{waterPerPlant} L</span>
+                            </div>
+                            <div className="bg-black/20 rounded-lg p-3">
+                                <span className="block text-sm font-bold opacity-80 uppercase">{t('irrigation_duration')}</span>
+                                <span className="text-2xl font-bold">{durationMins} {t('mins')}</span>
                             </div>
                         </div>
 
                         <button
                             onClick={handleApply}
-                            className="w-full py-4 bg-white text-green-700 font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-green-50 transition-colors shadow-lg"
+                            className="w-full h-16 bg-white text-green-800 border-4 border-black rounded-xl text-xl font-black uppercase flex items-center justify-center gap-3 active:scale-95 transition-transform"
                         >
                             {t('set_auto_irrigation')}
-                            <ArrowRight className="w-5 h-5" />
+                            <ArrowRight className="w-6 h-6" />
                         </button>
-                        <p className="text-center text-[10px] text-green-200/60 mt-2">
-                            {t('schedule_locked')}
-                        </p>
-                    </div>
+                    </section>
                 )}
-            </div>
+            </main>
         </div>
     );
 }

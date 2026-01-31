@@ -1,11 +1,9 @@
 import { auth } from "@/lib/auth"; // import from server auth
-import { Pool } from "pg";
+import { getPool } from "@/backend/lib/db";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
+const pool = getPool();
 
 export async function POST(req: Request) {
     try {

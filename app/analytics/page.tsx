@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area,
-    BarChart, Bar, Legend, Cell
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    BarChart, Bar, Cell
 } from 'recharts';
-import { ArrowLeft, Sprout, MapPin, Calendar, Activity, AlertTriangle, Loader2, Droplets, Trophy } from 'lucide-react';
+import { ArrowLeft, Sprout, MapPin, Calendar, Activity, AlertTriangle, Loader2, Droplets, Trophy, Volume2, Search } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AnalyticsPage() {
+    const { t, speak } = useLanguage();
+
     const [formData, setFormData] = useState({
         cropName: 'Wheat',
         plantingDate: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default 3 months ago
@@ -18,7 +21,7 @@ export default function AnalyticsPage() {
     });
 
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<any>(null); // Changed type to any to accommodate full response
+    const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'growth' | 'water'>('growth');
 
@@ -65,38 +68,40 @@ export default function AnalyticsPage() {
     const waterStats = data?.water_stats;
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-100 p-6 sticky top-0 z-10 flex items-center gap-4">
-                <Link href="/dashboard" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-24">
+
+            {/* Header - High Contrast */}
+            <div className="bg-[var(--card-bg)] border-b-2 border-[var(--card-border)] p-4 sticky top-0 z-20 flex items-center gap-4">
+                <Link href="/dashboard" className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Activity className="w-5 h-5 text-green-600" />
-                    </div>
-                    <h1 className="text-xl font-bold text-gray-800">Crop Growth Analytics</h1>
+                <div className="flex-1">
+                    <h1 className="text-xl font-black uppercase tracking-wide">{t('crop_growth_analytics')}</h1>
                 </div>
+                <button onClick={() => speak(t('crop_growth_analytics'))} className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <Volume2 className="w-6 h-6" />
+                </button>
             </div>
 
-            <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* Left Column: Form */}
-                <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                        <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                            <Sprout className="w-5 h-5 text-green-600" />
-                            Crop Configuration
-                        </h2>
+            <main className="p-4 space-y-6 max-w-md mx-auto">
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Crop Name</label>
+                {/* Config Card */}
+                <div className="bg-white border-4 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <h2 className="text-xl font-black mb-6 uppercase flex items-center gap-2">
+                        <Sprout className="w-6 h-6 text-green-700" />
+                        {t('crop_configuration')}
+                    </h2>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-lg font-bold mb-2 uppercase text-sm">{t('crop_type')}</label>
+                            <div className="relative">
                                 <select
                                     name="cropName"
                                     value={formData.cropName}
                                     onChange={handleChange}
-                                    className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    className="w-full h-12 pl-4 pr-10 border-4 border-black rounded-lg bg-gray-50 text-lg font-bold appearance-none focus:outline-none focus:ring-4 focus:ring-green-300"
                                 >
                                     <option value="Wheat">Wheat</option>
                                     <option value="Rice">Rice</option>
@@ -104,319 +109,235 @@ export default function AnalyticsPage() {
                                     <option value="Cotton">Cotton</option>
                                 </select>
                             </div>
+                        </div>
 
+                        <div>
+                            <label className="block text-lg font-bold mb-2 uppercase text-sm">{t('planting_date')}</label>
+                            <input
+                                type="date"
+                                name="plantingDate"
+                                value={formData.plantingDate}
+                                onChange={handleChange}
+                                className="w-full h-12 px-4 border-4 border-black rounded-lg bg-gray-50 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-green-300"
+                                required
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Planting Date</label>
+                                <label className="block text-lg font-bold mb-2 uppercase text-sm">{t('latitude')}</label>
                                 <div className="relative">
-                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                    <MapPin className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
                                     <input
-                                        type="date"
-                                        name="plantingDate"
-                                        value={formData.plantingDate}
+                                        type="text"
+                                        name="lat"
+                                        value={formData.lat}
                                         onChange={handleChange}
-                                        className="w-full pl-10 p-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                        required
+                                        className="w-full h-12 pl-9 pr-4 border-4 border-black rounded-lg bg-gray-50 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-green-300"
                                     />
                                 </div>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Latitude</label>
-                                    <div className="relative">
-                                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                                        <input
-                                            type="text"
-                                            name="lat"
-                                            value={formData.lat}
-                                            onChange={handleChange}
-                                            className="w-full pl-10 p-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Longitude</label>
-                                    <div className="relative">
-                                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                                        <input
-                                            type="text"
-                                            name="lon"
-                                            value={formData.lon}
-                                            onChange={handleChange}
-                                            className="w-full pl-10 p-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
                             <div>
-                                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Total Duration (Days)</label>
-                                <input
-                                    type="number"
-                                    name="duration"
-                                    value={formData.duration}
-                                    onChange={handleChange}
-                                    className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    placeholder="e.g. 120"
-                                    required
-                                />
+                                <label className="block text-lg font-bold mb-2 uppercase text-sm">{t('longitude')}</label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        name="lon"
+                                        value={formData.lon}
+                                        onChange={handleChange}
+                                        className="w-full h-12 pl-9 pr-4 border-4 border-black rounded-lg bg-gray-50 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-green-300"
+                                    />
+                                </div>
                             </div>
+                        </div>
 
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full bg-black text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 "
-                            >
-                                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                                {loading ? 'Analyzing...' : 'Show Report'}
-                            </button>
-                        </form>
+                        <div>
+                            <label className="block text-lg font-bold mb-2 uppercase text-sm">{t('total_duration')}</label>
+                            <input
+                                type="number"
+                                name="duration"
+                                value={formData.duration}
+                                onChange={handleChange}
+                                className="w-full h-12 px-4 border-4 border-black rounded-lg bg-gray-50 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-green-300"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-3 bg-black text-white font-black text-lg uppercase rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 mt-2 hover:bg-gray-900"
+                        >
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
+                            {loading ? t('analyzing') : t('show_report')}
+                        </button>
+                    </form>
+                </div>
+
+                {/* Error State */}
+                {error && (
+                    <div className="bg-red-100 border-4 border-black rounded-xl p-6 flex items-start gap-4">
+                        <AlertTriangle className="w-8 h-8 text-black shrink-0" />
+                        <div>
+                            <h3 className="font-black text-lg">Failed</h3>
+                            <p className="font-bold">{error}</p>
+                        </div>
                     </div>
+                )}
 
-                    {/* Stats Card */}
-                    {data && (
-                        <div className={`p-6 rounded-3xl shadow-sm text-white ${isMatured ? 'bg-amber-500' : 'bg-green-600'}`}>
-                            <h3 className="text-white/80 font-medium mb-1">Current Status</h3>
-                            <div className="text-4xl font-extrabold mb-2">{currentGrowth}%</div>
-                            <p className="text-sm opacity-90">
-                                {isMatured ? 'Crop is nearing maturity. Prepare for harvest.' : 'Crop is in active growth phase.'}
+                {/* Analysis Results */}
+                {data && (
+                    <div className="space-y-6">
+
+                        {/* Tabs */}
+                        <div className="flex border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <button
+                                onClick={() => setActiveTab('growth')}
+                                className={`flex-1 py-4 font-black uppercase text-sm ${activeTab === 'growth' ? 'bg-green-600 text-white' : 'bg-white text-black'}`}
+                            >
+                                {t('growth_analysis')}
+                            </button>
+                            <div className="w-1 bg-black"></div>
+                            <button
+                                onClick={() => setActiveTab('water')}
+                                className={`flex-1 py-4 font-black uppercase text-sm ${activeTab === 'water' ? 'bg-blue-600 text-white' : 'bg-white text-black'}`}
+                            >
+                                {t('water_saved')}
+                            </button>
+                        </div>
+
+                        {/* Current Status Badge */}
+                        <div className={`p-6 border-4 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white text-center ${isMatured ? 'bg-amber-500' : 'bg-green-600'}`}>
+                            <h3 className="font-bold mb-1 uppercase opacity-90">{t('current_status')}</h3>
+                            <div className="text-6xl font-black mb-2">{currentGrowth}%</div>
+                            <p className="font-bold opacity-90 leading-tight">
+                                {isMatured ? 'Ready for Harvest' : 'Active Growth Phase'}
                             </p>
                         </div>
-                    )}
-                </div>
 
-                {/* Right Column: Visuals */}
-                <div className="lg:col-span-2 space-y-6">
-                    {error && (
-                        <div className="bg-red-50 border border-red-100 rounded-3xl p-6 flex items-start gap-4">
-                            <div className="bg-red-100 p-2 rounded-full text-red-600">
-                                <AlertTriangle className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-red-800">Analysis Failed</h3>
-                                <p className="text-red-600 text-sm mt-1">{error}</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {!data && !loading && !error && (
-                        <div className="bg-white rounded-3xl p-12 border border-gray-100 flex flex-col items-center justify-center text-center h-96">
-                            <div className="bg-gray-50 p-4 rounded-full mb-4">
-                                <Activity className="w-8 h-8 text-gray-400" />
-                            </div>
-                            <h3 className="text-gray-800 font-bold text-lg">No Data to Display</h3>
-                            <p className="text-gray-500 max-w-sm mt-2">
-                                Enter your crop details and location to generate a growth and water savings report.
-                            </p>
-                        </div>
-                    )}
-
-                    {loading && (
-                        <div className="bg-white rounded-3xl p-12 border border-gray-100 flex flex-col items-center justify-center text-center h-96">
-                            <Loader2 className="w-10 h-10 text-green-600 animate-spin mb-4" />
-                            <h3 className="text-gray-800 font-bold">Processing Satellite Data...</h3>
-                            <p className="text-gray-500 text-sm">Simulating crop growth and water usage models</p>
-                        </div>
-                    )}
-
-                    {data && (
-                        <div className="space-y-6">
-                            {/* TABS */}
-                            <div className="flex bg-gray-200/50 p-1 rounded-2xl w-fit">
-                                <button
-                                    onClick={() => setActiveTab('growth')}
-                                    className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'growth'
-                                        ? 'bg-white shadow-sm text-green-700'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    Growth Analysis
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('water')}
-                                    className={`px-6 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'water'
-                                        ? 'bg-white shadow-sm text-sky-600'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    <Droplets className="w-4 h-4" />
-                                    Water Saved
-                                </button>
-                            </div>
-
-                            {/* CONTENT */}
-                            {activeTab === 'growth' ? (
-                                <>
-                                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                                        <div className="flex items-center justify-between mb-8">
-                                            <h2 className="font-bold text-gray-800">Growth Trajectory</h2>
-                                            <div className="text-xs font-semibold text-gray-400 bg-gray-50 px-3 py-1 rounded-full">
-                                                Day 1 - Day {chartData[chartData.length - 1].day}
-                                            </div>
-                                        </div>
-
-                                        <div className="h-80 w-full">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                                                    <defs>
-                                                        <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
-                                                            <stop offset="5%" stopColor="#16a34a" stopOpacity={0.2} />
-                                                            <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                                    <XAxis
-                                                        dataKey="day"
-                                                        label={{ value: 'Days After Planting', position: 'bottom', offset: 0 }}
-                                                        tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                    />
-                                                    <YAxis
-                                                        label={{ value: 'Growth %', angle: -90, position: 'insideLeft' }}
-                                                        tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        domain={[0, 100]}
-                                                    />
-                                                    <Tooltip
-                                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                                        itemStyle={{ color: '#16a34a', fontWeight: 'bold' }}
-                                                    />
-                                                    <Area
-                                                        type="monotone"
-                                                        dataKey="growthPercentage"
-                                                        stroke="#16a34a"
-                                                        strokeWidth={3}
-                                                        fillOpacity={1}
-                                                        fill="url(#colorGrowth)"
-                                                        activeDot={{ r: 6, strokeWidth: 0 }}
-                                                    />
-                                                </AreaChart>
-                                            </ResponsiveContainer>
-                                        </div>
-
-                                        <div className="mt-6 flex items-center justify-between text-sm text-gray-500 border-t border-gray-100 pt-6">
-                                            <div>
-                                                <span className="block text-xs uppercase font-semibold text-gray-400">Start Date</span>
-                                                <span className="font-medium text-gray-800">{new Date(formData.plantingDate).toLocaleDateString()}</span>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="block text-xs uppercase font-semibold text-gray-400">Latest Reading</span>
-                                                <span className="font-medium text-gray-800">{new Date().toLocaleDateString()}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Growth Reference Table */}
-                                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 overflow-hidden">
-                                        <h2 className="font-bold text-gray-800 mb-6">Growth Stages Reference</h2>
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full text-sm text-left">
-                                                <thead className="bg-gray-50 text-gray-500 uppercase font-semibold text-xs">
-                                                    <tr>
-                                                        <th className="px-4 py-3 rounded-l-lg">Growth %</th>
-                                                        <th className="px-4 py-3">Biological Stage</th>
-                                                        <th className="px-4 py-3 rounded-r-lg">Meaning</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-gray-100">
-                                                    {[
-                                                        { range: '0–10%', stage: 'Low Germination', desc: 'Seed just started sprouting' },
-                                                        { range: '11–20%', stage: 'Active Germination', desc: 'Roots and shoots forming' },
-                                                        { range: '21–30%', stage: 'Early Vegetative Stage', desc: 'Leaf development begins' },
-                                                        { range: '31–45%', stage: 'Healthy Vegetative Growth', desc: 'Rapid leaf & stem growth' },
-                                                        { range: '46–60%', stage: 'Tillering Stage', desc: 'Multiple shoots forming' },
-                                                        { range: '61–75%', stage: 'Flower Initiation', desc: 'Reproductive phase begins' },
-                                                        { range: '76–90%', stage: 'Grain / Fruit Development', desc: 'Yield formation' },
-                                                        { range: '91–100%', stage: 'Physiological Maturity', desc: 'Ready for harvest' },
-                                                    ].map((row, idx) => (
-                                                        <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                                                            <td className="px-4 py-3 font-medium text-green-600">{row.range}</td>
-                                                            <td className="px-4 py-3 font-semibold text-gray-800">{row.stage}</td>
-                                                            <td className="px-4 py-3 text-gray-600">{row.desc}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </>
-                            ) : (
-                                /* WATER SAVED TAB CONTENT */
-                                <div className="space-y-6">
-                                    {/* Hero Stats */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-sky-500 rounded-3xl p-8 text-white flex flex-col justify-between h-48 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                                            <div>
-                                                <div className="flex items-center gap-2 text-sky-100 font-bold mb-1">
-                                                    <Trophy className="w-5 h-5" />
-                                                    Total Saved
-                                                </div>
-                                                <div className="text-4xl font-extrabold">{waterStats?.saved_percentage || 0}%</div>
-                                                <p className="text-sky-100 text-sm mt-2 font-medium">Water conserved vs traditional methods</p>
-                                            </div>
-                                            <div className="mt-4 bg-white/20 backdrop-blur-md rounded-xl p-3 inline-flex items-center gap-3 w-fit">
-                                                <Droplets className="w-5 h-5 text-white" />
-                                                <span className="font-bold">{waterStats?.saved_gallons || 0} Gallons</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col justify-center gap-6">
-                                            <div>
-                                                <div className="text-sm text-gray-500 font-bold uppercase mb-1">Traditional Usage</div>
-                                                <div className="text-2xl font-bold text-gray-800">{waterStats?.traditional_usage || 0} <span className="text-sm font-medium text-gray-400">units</span></div>
-                                            </div>
-                                            <div className="h-px bg-gray-100 w-full"></div>
-                                            <div>
-                                                <div className="text-sm text-gray-500 font-bold uppercase mb-1">Smart Usage</div>
-                                                <div className="text-2xl font-bold text-green-600">{waterStats?.smart_usage || 0} <span className="text-sm font-medium text-gray-400">units</span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Impact Chart */}
-                                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                                        <h2 className="font-bold text-gray-800 mb-6">Efficiency Comparison</h2>
-                                        <div className="h-80 w-full">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart
-                                                    data={[
-                                                        { name: 'Traditional', usage: waterStats?.traditional_usage || 0 },
-                                                        { name: 'SmartIrrigate', usage: waterStats?.smart_usage || 0 },
-                                                    ]}
-                                                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                                                >
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                                    <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 14, fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                                                    <YAxis tick={{ fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                                                    <Tooltip
-                                                        cursor={{ fill: 'transparent' }}
-                                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                                    />
-                                                    <Bar dataKey="usage" name="Water Usage" fill="#3b82f6" radius={[10, 10, 0, 0]} barSize={80}>
-                                                        {
-                                                            [{ name: 'Traditional', color: '#94a3b8' }, { name: 'SmartIrrigate', color: '#16a34a' }].map((entry, index) => (
-                                                                <Cell key={`cell-${index}`} fill={entry.color} />
-                                                            ))
-                                                        }
-                                                    </Bar>
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                        <p className="text-center text-sm text-gray-500 mt-4 max-w-lg mx-auto">
-                                            By using predictive weather algorithms, SmartIrrigate avoided {waterStats?.saved_gallons || 0} gallons of unnecessary watering while maintaining optimal soil moisture.
-                                        </p>
+                        {/* CONTENT */}
+                        {activeTab === 'growth' ? (
+                            <>
+                                <div className="bg-white border-4 border-black rounded-xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                    <h2 className="font-black text-xl mb-4 uppercase">{t('growth_trajectory')}</h2>
+                                    <div className="h-64 w-full -ml-4">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                                                <defs>
+                                                    <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="5%" stopColor="#16a34a" stopOpacity={0.8} />
+                                                        <stop offset="95%" stopColor="#16a34a" stopOpacity={0.1} />
+                                                    </linearGradient>
+                                                </defs>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                                <XAxis dataKey="day" hide />
+                                                <YAxis hide domain={[0, 100]} />
+                                                <Tooltip
+                                                    contentStyle={{ borderRadius: '8px', border: '2px solid black', fontWeight: 'bold' }}
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="growthPercentage"
+                                                    stroke="black"
+                                                    strokeWidth={3}
+                                                    fillOpacity={1}
+                                                    fill="url(#colorGrowth)"
+                                                />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </div>
+
+                                {/* Chart Footer Info (Dates) */}
+                                <div className="flex justify-between text-xs font-bold text-gray-500 uppercase tracking-wider px-2">
+                                    <div>
+                                        <p>{t('start_date')}</p>
+                                        <p className="text-black">{formData.plantingDate}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p>{t('latest_reading')}</p>
+                                        <p className="text-black">{new Date().toISOString().split('T')[0]}</p>
+                                    </div>
+                                </div>
+
+                                {/* Growth Stages Reference Table */}
+                                <div className="bg-white border-4 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                    <h2 className="font-black text-lg mb-4 uppercase">{t('growth_stages_reference')}</h2>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm text-left">
+                                            <thead className="text-xs uppercase bg-gray-100 text-gray-500 border-b-2 border-gray-200">
+                                                <tr>
+                                                    <th className="px-4 py-3 font-black">{t('stage_growth_pct')}</th>
+                                                    <th className="px-4 py-3 font-black">{t('stage_bio_stage')}</th>
+                                                    <th className="px-4 py-3 font-black">{t('stage_meaning')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="font-bold">
+                                                <tr className="border-b border-gray-100 hover:bg-green-50">
+                                                    <td className="px-4 py-3 text-green-600">0-10%</td>
+                                                    <td className="px-4 py-3">{t('stage_germination')}</td>
+                                                    <td className="px-4 py-3 text-gray-500 font-medium">{t('stage_germination_desc')}</td>
+                                                </tr>
+                                                <tr className="border-b border-gray-100 hover:bg-green-50">
+                                                    <td className="px-4 py-3 text-green-600">11-50%</td>
+                                                    <td className="px-4 py-3">{t('stage_active')}</td>
+                                                    <td className="px-4 py-3 text-gray-500 font-medium">{t('stage_active_desc')}</td>
+                                                </tr>
+                                                <tr className="hover:bg-green-50">
+                                                    <td className="px-4 py-3 text-green-600">51-100%</td>
+                                                    <td className="px-4 py-3">{t('stage_maturation')}</td>
+                                                    <td className="px-4 py-3 text-gray-500 font-medium">{t('stage_maturation_desc')}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="bg-sky-500 border-4 border-black rounded-xl p-6 text-white text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                    <div className="flex items-center justify-center gap-2 mb-2">
+                                        <Trophy className="w-8 h-8 text-yellow-300" />
+                                        <span className="font-black uppercase text-xl">{t('total_saved')}</span>
+                                    </div>
+                                    <div className="text-6xl font-black mb-2">{waterStats?.saved_percentage || 0}%</div>
+                                    <div className="bg-black/20 rounded-lg p-2 font-bold inline-block">
+                                        {waterStats?.saved_gallons || 0} Gallons
+                                    </div>
+                                </div>
+
+                                <div className="bg-white border-4 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                    <h2 className="font-black text-xl mb-6 uppercase">{t('efficiency_comparison')}</h2>
+                                    <div className="h-64 w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                data={[
+                                                    { name: 'Trad.', usage: waterStats?.traditional_usage || 0 },
+                                                    { name: 'Smart', usage: waterStats?.smart_usage || 0 },
+                                                ]}
+                                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                            >
+                                                <XAxis dataKey="name" tick={{ fill: 'black', fontSize: 14, fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                                                <Tooltip
+                                                    cursor={{ fill: 'transparent' }}
+                                                    contentStyle={{ borderRadius: '8px', border: '2px solid black', fontWeight: 'bold' }}
+                                                />
+                                                <Bar dataKey="usage" radius={[8, 8, 8, 8]} barSize={60}>
+                                                    {
+                                                        [{ color: '#94a3b8' }, { color: '#16a34a' }].map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.color} stroke="black" strokeWidth={2} />
+                                                        ))
+                                                    }
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </main>
         </div>
     );
 }

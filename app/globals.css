@@ -22,5 +22,102 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  /* Modern, readable font */
+  font-size: 18px;
+  /* Minimum 18pt equivalent for visibility (approx) */
+  line-height: 1.6;
+}
+
+:root {
+  /* High-Contrast, Bold Design - Optimized for Sunlight */
+  --background: #FDFBF7;
+  /* Warm off-white to reduce glare */
+  --foreground: #111827;
+  /* Almost black for maximum contrast */
+
+  /* Primary Brand Colors */
+  --primary: #16a34a;
+  /* Green-600 - Main CTA color */
+  --primary-hover: #15803d;
+  /* Green-700 - Hover state */
+  --primary-foreground: #ffffff;
+
+  /* Secondary Accent */
+  --secondary: #e5e7eb;
+  /* Gray-200 for backgrounds */
+  --secondary-foreground: #111827;
+
+  /* Sky Blue Accent (for gradients and water features) */
+  --accent-sky: #0284c1;
+  /* Sky-600 */
+  --accent-sky-light: #f0f9ff;
+  /* Sky-50 */
+
+  /* Card Styles - BOLD BORDERS */
+  --card-bg: #ffffff;
+  --card-border: #000000;
+  /* BLACK borders for high contrast */
+
+  /* Success/Growth */
+  --success: #16a34a;
+  /* Green-600 */
+  --success-light: #f0fdf4;
+  /* Green-50 */
+
+  /* Warning/Alert */
+  --warning: #f59e0b;
+  /* Amber-500 */
+  --warning-light: #fffbeb;
+  /* Amber-50 */
+
+  /* Error/Problem */
+  --error: #ef4444;
+  /* Red-500 */
+  --error-light: #fee2e2;
+  /* Red-100 */
+
+  /* Text Colors */
+  --text-primary: #111827;
+  /* Gray-900 */
+  --text-secondary: #4b5563;
+  /* Gray-600 */
+  --text-tertiary: #9ca3af;
+  /* Gray-400 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Mode - High Contrast */
+    --background: #000000;
+    /* Pure black */
+    --foreground: #ffffff;
+    --primary: #22c55e;
+    /* Green-500 - Brighter for dark mode */
+    --primary-hover: #16a34a;
+    --primary-foreground: #000000;
+    --card-bg: #121212;
+    /* Very dark gray */
+    --card-border: #ffffff;
+    /* White borders in dark mode */
+    --secondary: #374151;
+    --secondary-foreground: #f3f4f6;
+  }
+}
+
+/* Base Styles for Visibility */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 800;
+  /* Extra bold */
+  letter-spacing: -0.02em;
+}
+
+button {
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }

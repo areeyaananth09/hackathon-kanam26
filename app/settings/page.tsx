@@ -1,86 +1,86 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, User, Bell, Shield, FileText, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
+import { ArrowLeft, User, Bell, Shield, FileText, HelpCircle, LogOut, ChevronRight, Volume2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SettingsPage() {
+    const { t, speak } = useLanguage();
+
     const settingSections = [
         {
-            title: 'Account',
+            title: t('account'),
             items: [
-                { icon: <User className="w-5 h-5 text-gray-500" />, label: 'Profile Settings', href: '/profile' },
-                { icon: <Bell className="w-5 h-5 text-gray-500" />, label: 'Notification Preferences', href: '/settings/notifications' },
+                { icon: <User className="w-8 h-8 text-black" />, label: t('profile_settings'), href: '/profile' },
+                { icon: <Bell className="w-8 h-8 text-black" />, label: t('notification_preferences'), href: '/settings/notifications' },
             ]
         },
         {
-            title: 'Legal & Support',
+            title: t('legal_support'),
             items: [
-                { icon: <Shield className="w-5 h-5 text-gray-500" />, label: 'Privacy Policy', href: '/privacy' },
-                { icon: <FileText className="w-5 h-5 text-gray-500" />, label: 'Terms & Conditions', href: '/terms' },
-                { icon: <HelpCircle className="w-5 h-5 text-gray-500" />, label: 'Help & Feedback', href: '/help' },
+                { icon: <Shield className="w-8 h-8 text-black" />, label: t('privacy_policy'), href: '/privacy' },
+                { icon: <FileText className="w-8 h-8 text-black" />, label: t('terms_conditions'), href: '/terms' },
+                { icon: <HelpCircle className="w-8 h-8 text-black" />, label: t('help_feedback'), href: '/help' },
             ]
         }
     ];
 
     return (
-        <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center p-4">
-            {/* Background decoration */}
-            <div className="fixed bottom-0 left-0 w-full h-1/3 bg-[#E0F2FE] -z-10 rounded-t-[50%]" />
-            <div className="fixed bottom-0 right-0 w-2/3 h-1/4 bg-[#D1FAE5] -z-10 rounded-t-[60%]" />
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-24">
 
-            <div className="w-full max-w-md">
-                {/* Navigation */}
-                <div className="mb-6">
-                    <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors font-medium">
-                        <ArrowLeft className="w-4 h-4" />
-                        Back to Dashboard
-                    </Link>
+            {/* Header - High Contrast */}
+            <div className="bg-[var(--card-bg)] border-b-2 border-[var(--card-border)] p-4 sticky top-0 z-20 flex items-center gap-4">
+                <Link href="/dashboard" className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <ArrowLeft className="w-6 h-6" />
+                </Link>
+                <div className="flex-1">
+                    <h1 className="text-xl font-black uppercase tracking-wide">{t('settings_title')}</h1>
                 </div>
+                <button onClick={() => speak(t('settings_title'))} className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <Volume2 className="w-6 h-6" />
+                </button>
+            </div>
 
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-                    {/* Header */}
-                    <div className="bg-green-50 p-6 border-b border-green-100">
-                        <h1 className="text-xl font-bold text-gray-900">Settings</h1>
-                        <p className="text-gray-500 text-sm">Manage your app preferences</p>
-                    </div>
+            <main className="p-4 space-y-8 max-w-md mx-auto mt-4">
 
-                    <div className="p-6 space-y-8">
-                        {settingSections.map((section, idx) => (
-                            <div key={idx}>
-                                <h2 className="text-xs font-bold text-green-600 uppercase tracking-wider mb-3 ml-2">{section.title}</h2>
-                                <div className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
-                                    {section.items.map((item, itemIdx) => (
-                                        <Link
-                                            key={itemIdx}
-                                            href={item.href}
-                                            className={`flex items-center justify-between p-4 hover:bg-gray-100 transition-colors ${itemIdx !== section.items.length - 1 ? 'border-b border-gray-200' : ''}`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
-                                                    {item.icon}
-                                                </div>
-                                                <span className="text-gray-700 font-medium">{item.label}</span>
-                                            </div>
-                                            <ChevronRight className="w-4 h-4 text-gray-400" />
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-
-                        {/* Log Out Button */}
-                        <div className="pt-2">
-                            <Link href="/" className="flex items-center justify-center gap-2 w-full p-4 rounded-xl text-red-600 hover:bg-red-50 font-bold transition-colors border border-transparent hover:border-red-100">
-                                <LogOut className="w-5 h-5" />
-                                Log Out
-                            </Link>
-                            <p className="text-center text-xs text-gray-400 mt-4">
-                                Version 1.0.2 • SmartIrrigate
-                            </p>
+                {settingSections.map((section, idx) => (
+                    <div key={idx}>
+                        <h2 className="text-xl font-black uppercase tracking-wide mb-4 flex items-center gap-2 px-2">
+                            {section.title}
+                        </h2>
+                        <div className="space-y-4">
+                            {section.items.map((item, itemIdx) => (
+                                <Link
+                                    key={itemIdx}
+                                    href={item.href}
+                                    className="block w-full bg-white border-4 border-black rounded-xl p-4 flex items-center justify-between shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all"
+                                    onClick={() => speak(item.label)}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-gray-100 p-2 rounded-lg border-2 border-black">
+                                            {item.icon}
+                                        </div>
+                                        <span className="text-lg font-bold text-black">{item.label}</span>
+                                    </div>
+                                    <ChevronRight className="w-6 h-6 text-black" />
+                                </Link>
+                            ))}
                         </div>
                     </div>
+                ))}
+
+                {/* Log Out Button */}
+                <div className="pt-4">
+                    <Link href="/" className="block w-full py-4 bg-red-600 text-white font-black text-xl uppercase text-center rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:scale-95 transition-transform flex items-center justify-center gap-2">
+                        <LogOut className="w-6 h-6" />
+                        {t('log_out')}
+                    </Link>
+                    <p className="text-center text-sm font-bold text-gray-400 mt-6 uppercase tracking-widest">
+                        v1.0.2 • SmartIrrigate
+                    </p>
                 </div>
-            </div>
+
+            </main>
         </div>
     );
 }

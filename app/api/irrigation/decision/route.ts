@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
-import { getWeather } from '@/app/actions/getWeather';
+import { getPool } from '@/backend/lib/db';
+import { getWeather } from '@/backend/actions/getWeather';
 import {
     determineIrrigationAction,
     estimateSoilMoisture,
@@ -9,12 +9,7 @@ import {
     CropStage
 } from '@/lib/irrigation';
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
-});
+const pool = getPool();
 
 export async function POST(req: Request) {
     try {

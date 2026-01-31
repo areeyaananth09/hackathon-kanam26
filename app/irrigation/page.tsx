@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Droplets, Timer, CheckCircle, AlertCircle, Waves, Play, Square, Loader2, Minus, Plus, Lock } from 'lucide-react';
-
+import { ArrowLeft, Droplets, Timer, AlertCircle, Waves, Play, Square, Loader2, Minus, Plus, Lock, Volume2 } from 'lucide-react';
 
 import { authClient } from '@/lib/auth-client';
 import { useSearchParams } from 'next/navigation';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function IrrigationControllerPage() {
+    const { speak, t } = useLanguage();
     const searchParams = useSearchParams();
+    // Defaulting to 5 minutes if not present to avoid NaNs
     const durationParam = searchParams.get('duration');
     const isAutoMode = searchParams.get('auto') === 'true';
 
@@ -65,7 +67,8 @@ export default function IrrigationControllerPage() {
             });
             setIsIrrigating(false);
             setLogId(null);
-            alert(`Cycle Completed (${durationMins} Mins)`);
+            speak(t('irrigation_finished'));
+            alert(`${t('cycle_completed')} (${durationMins} ${t('mins')})`);
         } catch (e) {
             console.error(e);
         } finally {
@@ -91,8 +94,9 @@ export default function IrrigationControllerPage() {
                 setSeconds(0);
                 setWaterUsed(0);
                 setIsIrrigating(true);
+                speak(`${t('starting_irrigation')} ${durationMins} ${t('minutes')}`);
             } else {
-                alert('Failed to start: ' + data.error);
+                alert(t('failed_to_start') + ': ' + data.error);
             }
         } catch (e) {
             console.error(e);
@@ -124,126 +128,108 @@ export default function IrrigationControllerPage() {
     }, [seconds, isIrrigating]);
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-100 p-6 sticky top-0 z-10 flex items-center gap-4">
-                <Link href="/dashboard" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-24">
+            {/* Header - High Contrast */}
+            <div className="bg-[var(--card-bg)] border-b-2 border-[var(--card-border)] p-4 sticky top-0 z-20 flex items-center gap-4">
+                <Link href="/dashboard" className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)] hover:bg-gray-300">
+                    <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Droplets className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-bold text-gray-800">Irrigation Controller</h1>
-                        <div className="flex items-center gap-2 mt-1">
-                            <button onClick={() => setDurationMins(p => Math.max(1, p - 1))} className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors ${isAutoMode ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isIrrigating || isAutoMode}>
-                                <Minus className="w-4 h-4 text-gray-600" />
-                            </button>
-                            <div className="text-center relative">
-                                <p className="text-sm font-bold text-gray-800">{durationMins} Min</p>
-                                <p className="text-[10px] text-blue-500 font-medium">~{targetWater} L</p>
-                                {isAutoMode && <Lock className="w-3 h-3 text-green-600 absolute -top-1 -right-4" />}
-                            </div>
-                            <button onClick={() => setDurationMins(p => p + 1)} className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors ${isAutoMode ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isIrrigating || isAutoMode}>
-                                <Plus className="w-4 h-4 text-gray-600" />
-                            </button>
-                        </div>
-                    </div>
+                <div className="flex-1">
+                    <h1 className="text-xl font-black uppercase tracking-wide">{t('irrigation_control')}</h1>
                 </div>
             </div>
 
-            <div className="max-w-md mx-auto p-6 space-y-8">
+            <main className="max-w-md mx-auto p-4 space-y-6">
 
-                {/* Visual Timer Circle */}
-                <div className="relative flex items-center justify-center py-10">
-                    {/* Outer Rings */}
-                    <div className={`absolute w-64 h-64 rounded-full border-4 ${isIrrigating ? 'border-blue-100 animate-pulse' : 'border-gray-100'}`}></div>
-                    <div className={`absolute w-56 h-56 rounded-full border-4 ${isIrrigating ? 'border-blue-200' : 'border-gray-200'}`}></div>
-
-                    {/* Main Circle */}
-                    <div className={`w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-xl z-10 transition-colors duration-500 ${isIrrigating ? 'bg-blue-500 text-white shadow-blue-200' : 'bg-white text-gray-800'}`}>
-                        <div className="text-sm font-semibold uppercase tracking-widest opacity-80 mb-1">
-                            {isIrrigating ? 'Running' : 'Ready'}
-                        </div>
-                        <div className="text-5xl font-mono font-bold tracking-tight">
-                            {formatTime(seconds)}
-                        </div>
-                        <div className="text-xs font-medium mt-2 opacity-80">
-                            TARGET: {formatTime(MAX_DURATION_SECONDS)}
-                        </div>
+                {/* Main Timer Display */}
+                <div className={`
+                    rounded-3xl border-4 border-black p-8 text-center flex flex-col items-center justify-center min-h-[300px] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+                    ${isIrrigating ? 'bg-[#C1E1C1]' : 'bg-white'}
+                `}>
+                    <div className="uppercase font-black text-xl mb-4 tracking-widest">
+                        {isIrrigating ? t('running_now') : t('ready_to_start')}
                     </div>
 
-                    {/* Animated Particles if running */}
-                    {isIrrigating && (
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="w-full h-full animate-spin-slow opacity-30">
-                                {/* Pseudocode for droplets rotation could go here, simplified for now */}
-                            </div>
+                    <div className="text-7xl font-mono font-black mb-4">
+                        {formatTime(isIrrigating ? seconds : MAX_DURATION_SECONDS)}
+                    </div>
+
+                    <div className="text-xl font-bold opacity-70 mb-8">
+                        {isIrrigating ? t('target') + ': ' + formatTime(MAX_DURATION_SECONDS) : t('duration_set')}
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="w-full bg-black/10 h-6 rounded-full overflow-hidden border-2 border-black">
+                        <div
+                            className="bg-blue-600 h-full transition-all duration-1000"
+                            style={{ width: `${Math.min(100, (seconds / MAX_DURATION_SECONDS) * 100)}%` }}
+                        ></div>
+                    </div>
+                </div>
+
+                {/* Duration Controls (Only if not running) */}
+                {!isIrrigating && (
+                    <div className="bg-white border-4 border-black rounded-xl p-4 flex items-center justify-between shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        <button
+                            onClick={() => setDurationMins(p => Math.max(1, p - 1))}
+                            disabled={isAutoMode}
+                            className={`p-4 bg-[var(--secondary)] rounded-xl border-2 border-black ${isAutoMode ? 'opacity-30' : 'active:scale-95'}`}
+                        >
+                            <Minus className="w-8 h-8" />
+                        </button>
+
+                        <div className="text-center">
+                            <span className="block text-xs font-bold uppercase mb-1">{isAutoMode ? t('ai_locked') : t('set_duration')}</span>
+                            <span className="text-3xl font-black">{durationMins} {t('min')}</span>
                         </div>
+
+                        <button
+                            onClick={() => setDurationMins(p => p + 1)}
+                            disabled={isAutoMode}
+                            className={`p-4 bg-[var(--secondary)] rounded-xl border-2 border-black ${isAutoMode ? 'opacity-30' : 'active:scale-95'}`}
+                        >
+                            <Plus className="w-8 h-8" />
+                        </button>
+                    </div>
+                )}
+
+
+                {/* BIG Start/Stop Buttons */}
+                <div className="pt-4">
+                    {!isIrrigating ? (
+                        <button
+                            onClick={handleStart}
+                            disabled={isLoading}
+                            className="w-full py-8 bg-green-600 text-white rounded-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-4"
+                        >
+                            {isLoading ? <Loader2 className="w-10 h-10 animate-spin" /> : <Play className="w-10 h-10 fill-current" />}
+                            <span className="text-3xl font-black uppercase">{t('start_irrigation')}</span>
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleStop}
+                            disabled={isLoading}
+                            className="w-full py-8 bg-red-600 text-white rounded-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-4"
+                        >
+                            <Square className="w-10 h-10 fill-current" />
+                            <span className="text-3xl font-black uppercase">{t('stop_immediately')}</span>
+                        </button>
                     )}
                 </div>
 
-                {/* Controls */}
+                {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                    <button
-                        onClick={() => !isIrrigating && handleStart()}
-                        disabled={isIrrigating || isLoading}
-                        className={`py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${isIrrigating ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-green-500 text-white shadow-lg shadow-green-200 hover:bg-green-600 transform hover:scale-105'}`}
-                    >
-                        {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Play className="w-6 h-6 fill-current" />}
-                        Start Cycle
-                    </button>
-
-                    <button
-                        onClick={() => isIrrigating && handleStop()}
-                        disabled={!isIrrigating || isLoading}
-                        className={`py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${!isIrrigating ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-500 text-white shadow-lg shadow-red-200 hover:bg-red-600 transform hover:scale-105'}`}
-                    >
-                        <Square className="w-6 h-6 fill-current" />
-                        Stop Early
-                    </button>
-                </div>
-
-                {/* Field Status Card */}
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
-                                <Waves className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-gray-800">Field Status</h3>
-                                <p className="text-xs text-gray-500">Zone 1 • North Patch</p>
-                            </div>
-                        </div>
-                        <div className={`px-3 py-1 rounded-full text-xs font-bold ${isIrrigating ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
-                            {isIrrigating ? 'Irrigation Active' : 'System Idle'}
-                        </div>
+                    <div className="bg-blue-50 border-4 border-black rounded-xl p-4 text-center">
+                        <div className="text-xs font-bold uppercase mb-1">{t('flow_rate')}</div>
+                        <div className="text-2xl font-black text-blue-800">{isIrrigating ? FLOW_RATE_LPM : '0'} L/m</div>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-blue-50 p-4 rounded-2xl">
-                            <div className="text-blue-400 text-xs font-bold uppercase mb-1">Flow Rate</div>
-                            <div className="text-2xl font-bold text-blue-700">
-                                {isIrrigating ? FLOW_RATE_LPM : '0'} <span className="text-sm font-medium opacity-60">L/min</span>
-                            </div>
-                        </div>
-                        <div className="bg-cyan-50 p-4 rounded-2xl">
-                            <div className="text-cyan-600 text-xs font-bold uppercase mb-1">Water Used</div>
-                            <div className="text-2xl font-bold text-cyan-800">
-                                {waterUsed.toFixed(1)} <span className="text-sm font-medium opacity-60">L</span>
-                            </div>
-                        </div>
+                    <div className="bg-cyan-50 border-4 border-black rounded-xl p-4 text-center">
+                        <div className="text-xs font-bold uppercase mb-1">{t('water_used')}</div>
+                        <div className="text-2xl font-black text-cyan-800">{waterUsed.toFixed(1)} L</div>
                     </div>
                 </div>
 
-                {/* Info */}
-                <p className="text-center text-xs text-gray-400 max-w-xs mx-auto">
-                    Manual override enabled. Automated schedule will resume after manual cycle completes.
-                </p>
-
-            </div>
+            </main>
         </div>
     );
 }

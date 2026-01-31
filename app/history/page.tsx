@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Droplets, CloudSun, CloudRain, Sun, XCircle, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function HistoryPage() {
+    const { t } = useLanguage();
     const [historyItems, setHistoryItems] = useState<any[]>([]);
 
     useEffect(() => {
@@ -16,7 +18,7 @@ export default function HistoryPage() {
                     const formatted = data.history.map((row: any) => ({
                         id: row.id,
                         date: new Date(row.display_time).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
-                        status: row.status === 'In Progress' ? 'Running' : (row.status || (row.action === 'Skip' ? 'Skipped' : 'Irrigated')),
+                        status: row.status === 'In Progress' ? t('running') : (row.status || (row.action === 'Skip' ? t('skipped') : t('irrigated'))),
                         duration: row.durationMinutes ? `${Math.round(row.durationMinutes)} Mins` : '-',
                         weatherText: row.reason || `${row.waterConsumed ? Math.round(row.waterConsumed) + 'L' : ''}`,
                         weatherIcon: row.status === 'Completed' ? <Sun className="w-5 h-5 text-orange-500" /> : <CloudSun className="w-5 h-5 text-gray-400" />
@@ -41,7 +43,7 @@ export default function HistoryPage() {
                 <div className="mb-6 flex items-center justify-between">
                     <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors font-medium">
                         <ArrowLeft className="w-4 h-4" />
-                        Back to Dashboard
+                        {t('back_dashboard')}
                     </Link>
                     <div className="bg-white p-2 rounded-xl shadow-sm cursor-pointer">
                         <Calendar className="w-5 h-5 text-gray-500" />
@@ -51,8 +53,8 @@ export default function HistoryPage() {
                 <div className="bg-white rounded-3xl shadow-xl overflow-hidden min-h-[600px] flex flex-col">
                     {/* Header */}
                     <div className="bg-green-50 p-6 border-b border-green-100">
-                        <h1 className="text-xl font-bold text-gray-900">Irrigation History</h1>
-                        <p className="text-gray-500 text-sm">Past 30 days activity</p>
+                        <h1 className="text-xl font-bold text-gray-900">{t('irrigation_history')}</h1>
+                        <p className="text-gray-500 text-sm">{t('past_30_days')}</p>
                     </div>
 
                     {/* List */}
@@ -72,10 +74,10 @@ export default function HistoryPage() {
                                     {/* Details */}
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className={`text-sm font-bold ${item.status === 'Irrigated' ? 'text-blue-600' : 'text-gray-500'}`}>
+                                            <span className={`text-sm font-bold ${item.status === t('irrigated') ? 'text-blue-600' : 'text-gray-500'}`}>
                                                 {item.status}
                                             </span>
-                                            {item.status === 'Irrigated' && (
+                                            {item.status === t('irrigated') && (
                                                 <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] rounded-full font-medium">
                                                     {item.duration}
                                                 </span>
@@ -91,7 +93,7 @@ export default function HistoryPage() {
 
                                 {/* Status Icon */}
                                 <div className="pr-2">
-                                    {item.status === 'Irrigated' ? (
+                                    {item.status === t('irrigated') ? (
                                         <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                                             <Droplets className="w-4 h-4 text-blue-600" />
                                         </div>
