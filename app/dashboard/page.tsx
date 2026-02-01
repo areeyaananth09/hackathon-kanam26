@@ -1,14 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { CloudRain, Droplets, Thermometer, User, Calendar, Settings, Volume2, Wifi, WifiOff, RefreshCw } from 'lucide-react';
+import { CloudRain, Droplets, Thermometer, User, Calendar, Settings, Volume2, Wifi, WifiOff, RefreshCw, LogOut } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import { getFarmDetails } from '@/backend/actions/getFarmDetails';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function DashboardPage() {
     const { t, speak } = useLanguage();
+    const router = useRouter();
     const [mounted, setMounted] = useState(false);
     // Initialize state from local storage if available to avoid loading spinners
     const [data, setData] = useState<any>(() => {
@@ -20,6 +22,17 @@ export default function DashboardPage() {
     });
     const [isOnline, setIsOnline] = useState(true);
     const [isSyncing, setIsSyncing] = useState(false);
+
+    const handleLogout = async () => {
+        try {
+            await authClient.signOut();
+            // Clear cached data
+            localStorage.removeItem('dashboard_data');
+            router.push('/');
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
 
     useEffect(() => {
         // Set mounted to true after hydration
@@ -135,6 +148,13 @@ export default function DashboardPage() {
                     <Link href="/profile" className="p-3 bg-[var(--secondary)] rounded-full border-2 border-[var(--card-border)]">
                         <User className="w-6 h-6" />
                     </Link>
+                    <button
+                        onClick={handleLogout}
+                        className="p-3 bg-red-100 hover:bg-red-200 rounded-full border-2 border-[var(--card-border)]"
+                        title={t('log_out')}
+                    >
+                        <LogOut className="w-6 h-6 text-red-600" />
+                    </button>
                 </div>
             </div>
 
